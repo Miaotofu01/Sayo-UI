@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sayo UI · docs</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='8' cy='12' r='7.5' stroke='%23bc8cff' stroke-width='1.3' fill='none'/%3E%3Ccircle cx='16' cy='12' r='7.5' stroke='%23bc8cff' stroke-width='1.3' fill='none'/%3E%3Cpath d='M10.7 7.6a7.5 7.5 0 012.6 0 7.5 7.5 0 010 8.8 7.5 7.5 0 01-2.6 0 7.5 7.5 0 010-8.8z' fill='%23bc8cff' opacity='.18'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sayo.css">
+<style>
+  /* Doc-specific overrides — minimal, only what sayo.css doesn't cover */
+  .doc-grid {
+    display: grid; grid-template-columns: auto 1fr; min-height: 100vh;
+  }
+
+  .doc-sidebar {
+    position: sticky; top: var(--syo-nav-height);
+    height: calc(100vh - var(--syo-nav-height));
+    width: 220px;
+    padding: var(--syo-space-6) var(--syo-space-5);
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--syo-bg-surface);
+    border-right: 1px solid var(--syo-border);
+    transition: width 350ms var(--syo-ease-out),
+                padding 350ms var(--syo-ease-out);
+  }
+  .doc-sidebar.collapsed {
+    width: 44px;
+    padding: var(--syo-space-3) var(--syo-space-1);
+  }
+
+  /* ── Sidebar toggle button ── */
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    margin-bottom: var(--syo-space-3);
+    border: 1px solid var(--syo-border);
+    border-radius: var(--syo-radius-sm);
+    background: var(--syo-bg-surface);
+    color: var(--syo-fg-muted);
+    cursor: pointer;
+    transition: color 180ms var(--syo-ease-out),
+                border-color 180ms var(--syo-ease-out),
+                margin 350ms var(--syo-ease-out);
+    flex-shrink: 0;
+  }
+  .sidebar-toggle:hover { color: var(--syo-accent); border-color: var(--syo-accent); }
+  .sidebar-toggle svg { width: 13px; height: 13px; transition: transform 350ms var(--syo-ease-out); }
+  .doc-sidebar.collapsed .sidebar-toggle { margin-left: auto; margin-right: auto; }
+  .doc-sidebar.collapsed .sidebar-toggle svg { transform: rotate(180deg); }
+
+  /* Text — fade out during collapse */
+  .doc-sidebar a,
+  .doc-sidebar .doc-sidebar-title span {
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 180ms ease;
+  }
+
+  /* Collapsed: links shrink to zero, titles keep only icon */
+  .doc-sidebar.collapsed a {
+    opacity: 0;
+    padding-top: 0; padding-bottom: 0;
+    height: 0; margin: 0;
+    overflow: hidden;
+    border-left: none;
+    transition: opacity 100ms ease, height 0ms linear 100ms,
+                padding 0ms linear 100ms, margin 0ms linear 100ms;
+  }
+  .doc-sidebar.collapsed .doc-sidebar-title span {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+    transition: opacity 100ms ease;
+  }
+
+  /* Collapsed: keep icons as nav dots, center them */
+  .doc-sidebar.collapsed .doc-sidebar-title {
+    justify-content: center;
+    position: relative;
+    margin-top: var(--syo-space-2);
+    margin-bottom: var(--syo-space-2);
+  }
+  .doc-sidebar.collapsed .doc-sidebar-title svg { width: 15px; height: 15px; }
+
+  .doc-sidebar a {
+    display: block;
+    padding: 6px 10px;
+    margin-bottom: 1px;
+    font-size: 0.8125rem;
+    color: var(--syo-fg-muted);
+    border-radius: var(--syo-radius-sm);
+    border-left: 2px solid transparent;
+    transition: color 180ms var(--syo-ease-out),
+                background 180ms var(--syo-ease-out),
+                border-color 200ms var(--syo-ease-out);
+  }
+  .doc-sidebar a:hover {
+    color: var(--syo-fg-default);
+    background: var(--syo-bg-surface);
+    border-left-color: var(--syo-border);
+  }
+  .doc-sidebar a.active {
+    color: var(--syo-accent);
+    background: rgba(188, 140, 255, 0.08);
+    border-left-color: var(--syo-accent);
+    font-weight: 500;
+  }
+  .doc-sidebar-title {
+    display: flex;
+    align-items: center;
+    gap: var(--syo-space-2);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--syo-fg-default);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-top: var(--syo-space-5);
+    margin-bottom: var(--syo-space-2);
+  }
+  .doc-sidebar-title:first-child { margin-top: 0; }
+  .doc-sidebar-title svg {
+    flex-shrink: 0;
+    color: var(--syo-accent);
+  }
+
+  .doc-main { padding: var(--syo-space-12) var(--syo-space-10); max-width: 780px; }
+
+  .doc-section { margin-bottom: var(--syo-space-12); }
+  .doc-section:last-child { margin-bottom: 0; }
+
+  .demo-box {
+    margin-top: var(--syo-space-4);
+    padding: var(--syo-space-6);
+    background: var(--syo-bg-surface);
+    border: 1px solid var(--syo-border);
+    border-radius: var(--syo-radius-md);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+
+  .demo-row { display: flex; flex-wrap: wrap; gap: var(--syo-space-2); margin-bottom: var(--syo-space-3); }
+  .demo-row:last-child { margin-bottom: 0; }
+
+  .code-block {
+    margin-top: var(--syo-space-3);
+    background: var(--syo-bg-base);
+    border: 1px solid var(--syo-border-muted);
+    border-radius: var(--syo-radius-sm);
+    padding: var(--syo-space-4);
+    overflow-x: auto;
+    font-family: var(--syo-font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    color: var(--syo-fg-body);
+    white-space: pre;
+  }
+
+  .code-block .syn { color: var(--syo-syn-comment); font-style: italic; }
+
+  /* ── Hamburger button ── */
+  .nav-hamburger {
+    display: none;
+    align-items: center; justify-content: center;
+    width: 32px; height: 32px;
+    margin-right: var(--syo-space-2);
+    border: none; background: none;
+    color: var(--syo-fg-muted);
+    cursor: pointer;
+    border-radius: var(--syo-radius-sm);
+    transition: color 150ms, background 150ms;
+    flex-shrink: 0;
+  }
+  .nav-hamburger:hover { color: var(--syo-fg-default); background: var(--syo-bg-surface); }
+
+  /* ── Sidebar backdrop (mobile) ── */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    top: var(--syo-nav-height);
+    background: rgba(0,0,0,0.5);
+    z-index: 150;
+    opacity: 0;
+    transition: opacity 300ms ease;
+    pointer-events: none;
+  }
+  .sidebar-backdrop.show { opacity: 1; pointer-events: auto; }
+
+  /* ── Main content — fluid padding ── */
+  .doc-main {
+    padding: clamp(var(--syo-space-6), 4vw, var(--syo-space-12))
+             clamp(var(--syo-space-4), 4vw, var(--syo-space-10));
+    max-width: 780px;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     TABLET: ≤1024px
+     Sidebar auto-collapsed (toggle to expand)
+     ═══════════════════════════════════════════════════════════════ */
+  @media (max-width: 1024px) {
+    /* Auto-collapse sidebar (unless user explicitly expanded via .collapsed toggle) */
+    .doc-sidebar:not(.collapsed) {
+      width: 44px;
+      padding: var(--syo-space-3) var(--syo-space-1);
+    }
+    .doc-sidebar:not(.collapsed) a {
+      opacity: 0; padding-top: 0; padding-bottom: 0;
+      height: 0; margin: 0; overflow: hidden;
+      border-left: none;
+      transition: opacity 100ms ease, height 0ms linear 100ms,
+                  padding 0ms linear 100ms, margin 0ms linear 100ms;
+    }
+    .doc-sidebar:not(.collapsed) .doc-sidebar-title {
+      justify-content: center; position: relative;
+      margin-top: var(--syo-space-2); margin-bottom: var(--syo-space-2);
+    }
+    .doc-sidebar:not(.collapsed) .doc-sidebar-title span {
+      opacity: 0; position: absolute; pointer-events: none;
+      transition: opacity 100ms ease;
+    }
+    .doc-sidebar:not(.collapsed) .doc-sidebar-title svg { width: 15px; height: 15px; }
+    .doc-sidebar:not(.collapsed) .sidebar-toggle { margin-left: auto; margin-right: auto; }
+    .doc-sidebar:not(.collapsed) .sidebar-toggle svg { transform: rotate(180deg); }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     MOBILE: ≤768px
+     Single column · off-canvas sidebar · hamburger visible
+     ═══════════════════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    .nav-hamburger { display: flex; }
+    .doc-grid { grid-template-columns: 1fr; }
+
+    .doc-sidebar {
+      position: fixed;
+      top: var(--syo-nav-height); left: 0; bottom: 0;
+      width: 260px; z-index: 200;
+      transform: translateX(-100%);
+      transition: transform 300ms var(--syo-ease-out);
+      box-shadow: 2px 0 16px rgba(0,0,0,0.3);
+      padding: var(--syo-space-5) var(--syo-space-4) !important;
+    }
+    .doc-sidebar.mobile-open { transform: translateX(0); }
+
+    /* Reset collapsed state when open on mobile */
+    .doc-sidebar.mobile-open,
+    .doc-sidebar.mobile-open.collapsed { width: 260px; }
+    .doc-sidebar.mobile-open a {
+      opacity: 1; padding-top: 6px; padding-bottom: 6px;
+      height: auto; margin-bottom: 1px; overflow: visible;
+    }
+    .doc-sidebar.mobile-open .doc-sidebar-title {
+      justify-content: flex-start; position: static;
+      margin-top: var(--syo-space-5); margin-bottom: var(--syo-space-2);
+    }
+    .doc-sidebar.mobile-open .doc-sidebar-title span {
+      opacity: 1; position: static; pointer-events: auto;
+    }
+    .doc-sidebar.mobile-open .doc-sidebar-title svg { width: 13px; height: 13px; }
+    .doc-sidebar.mobile-open .sidebar-toggle { margin-left: 0; margin-right: 0; }
+    .doc-sidebar.mobile-open .sidebar-toggle svg { transform: rotate(0); }
+
+    .sidebar-backdrop { display: block; }
+    .syo-hero-logo svg { width: clamp(48px, 12vw, 80px); height: clamp(48px, 12vw, 80px); }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     SMALL: ≤480px
+     Compact nav · tighter spacing
+     ═══════════════════════════════════════════════════════════════ */
+  @media (max-width: 480px) {
+    .syo-nav { padding: 0 var(--syo-space-3); }
+    .syo-nav-links { gap: var(--syo-space-2); }
+    .syo-nav-links a { font-size: 0.75rem; }
+    .code-block { font-size: clamp(0.6875rem, 3vw, 0.8125rem); padding: var(--syo-space-3); }
+    .demo-box { padding: var(--syo-space-4); }
+    .demo-row { gap: var(--syo-space-1); }
+  }
+
+  /* ── Hero logo ── */
+  .syo-hero-logo {
+    display: flex; flex-direction: column; align-items: center;
+    margin-bottom: var(--syo-space-6);
+    cursor: pointer;
+    user-select: none;
+    gap: var(--syo-space-3);
+  }
+  .syo-hero-logo svg {
+    filter: drop-shadow(0 0 14px rgba(188,140,255,0.4))
+            drop-shadow(0 0 32px rgba(188,140,255,0.2));
+    transition: filter 300ms var(--syo-ease-out);
+  }
+  .syo-hero-logo:hover svg {
+    filter: drop-shadow(0 0 18px rgba(188,140,255,0.55))
+            drop-shadow(0 0 48px rgba(188,140,255,0.3));
+  }
+  .syo-hero-logo:active svg {
+    transform: scale(0.95);
+    transition: transform 120ms var(--syo-ease-elastic);
+  }
+  .syo-hero-logo .hero-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--syo-fg-default);
+    letter-spacing: -0.02em;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .syo-hero-logo .hero-text.show {
+    animation: hero-text-in 600ms var(--syo-ease-elastic) forwards;
+  }
+  @keyframes hero-text-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Logo reveal animation — class-driven so we can replay ──
+     Add .animate to the SVG to trigger the two-circle separation.
+     Remove + re-add .animate to replay. */
+
+  /* Default: pre-animation — circles coincident, lens invisible */
+  .logo-ring-l, .logo-ring-r { transform: translateX(0); }
+  .logo-lens { opacity: 0; }
+
+  .sayo-logo-svg.animate .logo-ring-l { animation: logo-roll-left 900ms cubic-bezier(0.34,1.56,0.64,1) 200ms both; }
+  .sayo-logo-svg.animate .logo-ring-r { animation: logo-roll-right 900ms cubic-bezier(0.34,1.56,0.64,1) 200ms both; }
+  .sayo-logo-svg.animate .logo-lens  { animation: logo-lens-in 500ms ease-out 700ms both; }
+
+  @keyframes logo-roll-left {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-4px); }
+  }
+  @keyframes logo-roll-right {
+    from { transform: translateX(0); }
+    to   { transform: translateX(4px); }
+  }
+  @keyframes logo-lens-in {
+    from { opacity: 0; }
+    to   { opacity: 0.18; }
+  }
+
+  /* Reduced motion — skip animation, show final state */
+  @media (prefers-reduced-motion: reduce) {
+    .logo-ring-l { transform: translateX(-4px); animation: none !important; }
+    .logo-ring-r { transform: translateX(4px); animation: none !important; }
+    .logo-lens { opacity: 0.18; animation: none !important; }
+  }
+</style>
+</head>
+<body data-syo-cursor data-syo-trail>
+
+<!-- Skip link (visible on focus) -->
+<a href="#main-content" class="syo-skip-link">Skip to content</a>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="syo-nav">
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" title="菜单">
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+  <span class="syo-nav-brand">Sayo UI</span>
+  <div class="syo-nav-links">
+    <a href="#install" data-i18n="nav.install">安装</a>
+    <a href="#tokens" data-i18n="nav.tokens">变量</a>
+    <a href="#components" data-i18n="nav.components">组件</a>
+    <a href="#motion" data-i18n="nav.motion">动效</a>
+    <a href="#js" data-i18n="nav.js">API</a>
+    <label class="syo-toggle syo-toggle-lang" id="lang-toggle" title="Switch language">
+      <input type="checkbox" id="lang-checkbox">
+      <span class="syo-toggle-track"></span>
+      <span class="syo-toggle-knob">
+        <span class="syo-lang-zh">中</span>
+        <span class="syo-lang-en">EN</span>
+      </span>
+    </label>
+    <label class="syo-toggle syo-toggle-theme" id="theme-toggle" title="Toggle theme" style="margin-left:var(--syo-space-2)">
+      <input type="checkbox" id="theme-checkbox">
+      <span class="syo-toggle-track"></span>
+      <span class="syo-toggle-knob">
+        <svg class="syo-toggle-sun" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3.5" stroke="#f57c00" stroke-width="1.5"/><path d="M10 2v2.5M10 15.5V18M2 10h2.5M15.5 10H18M4.34 4.34l1.77 1.77M13.89 13.89l1.77 1.77M4.34 15.66l1.77-1.77M13.89 6.11l1.77-1.77" stroke="#f57c00" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <svg class="syo-toggle-moon" viewBox="0 0 20 20" fill="none"><path d="M16.5 12.5A6 6 0 019 4.5a6 6 0 007.5 8z" stroke="#5c6bc0" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </span>
+    </label>
+  </div>
+</nav>
+
+<!-- ═══════════ LAYOUT ═══════════ -->
+<div class="doc-grid">
+
+<!-- SIDEBAR BACKDROP (mobile) -->
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+<!-- SIDEBAR -->
+<aside class="doc-sidebar" data-syo-scrollspy="100">
+  <button class="sidebar-toggle" id="sidebar-toggle" title="折叠侧边栏" aria-label="Toggle sidebar">
+    <svg viewBox="0 0 20 20" fill="none"><path d="M7 4l-1.5 1.5L10.5 10l-5 4.5L7 16l6-6-6-6z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <p class="doc-sidebar-title">
+    <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><path d="M5 3h8l4 4v10a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 014 17V4.5A1.5 1.5 0 015.5 3z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3v4h4M7 9h6M7 12.5h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <span data-i18n="sidebar.getting-started">快速开始</span>
+  </p>
+  <a href="#install" data-i18n="sidebar.install">安装</a>
+  <a href="#quick-start" data-i18n="sidebar.quick-start">快速开始</a>
+
+  <p class="doc-sidebar-title">
+    <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="4.5" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="6" r="1.5" fill="currentColor"/></svg>
+    <span data-i18n="sidebar.tokens">设计变量</span>
+  </p>
+  <a href="#tokens" data-i18n="sidebar.css-vars">CSS 变量</a>
+  <a href="#colors" data-i18n="sidebar.colors">配色</a>
+  <a href="#typography" data-i18n="sidebar.typography">字体排印</a>
+
+  <p class="doc-sidebar-title">
+    <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+    <span data-i18n="sidebar.components">组件</span>
+  </p>
+  <a href="#comp-nav" data-i18n="sidebar.nav">导航栏</a>
+  <a href="#comp-editor" data-i18n="sidebar.editor">代码编辑器</a>
+  <a href="#comp-card" data-i18n="sidebar.card">卡片</a>
+  <a href="#comp-tag" data-i18n="sidebar.tag">标签</a>
+  <a href="#comp-btn" data-i18n="sidebar.btn">按钮</a>
+  <a href="#comp-stat" data-i18n="sidebar.stat">统计</a>
+  <a href="#comp-toast" data-i18n="sidebar.toast">通知</a>
+  <a href="#comp-countup" data-i18n="sidebar.countup">数字跳动</a>
+  <a href="#comp-inertia" data-i18n="sidebar.inertia">惯性滚动</a>
+  <a href="#comp-form" data-i18n="sidebar.form">表单</a>
+  <a href="#comp-dialog" data-i18n="sidebar.dialog">对话框</a>
+  <a href="#comp-toggle" data-i18n="sidebar.toggle">Theme Toggle</a>
+
+  <p class="doc-sidebar-title">
+    <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 2a8 8 0 010 16V2z" fill="currentColor" opacity="0.3"/></svg>
+    <span data-i18n="sidebar.theme">主题</span>
+  </p>
+  <a href="#theme" data-i18n="sidebar.theme">主题</a>
+
+  <p class="doc-sidebar-title">
+    <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><path d="M11 2L5 11h5l-1 7 6-9h-5l1-7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+    <span data-i18n="sidebar.motion-js">动效 & JS</span>
+  </p>
+  <a href="#motion" data-i18n="sidebar.motion">动效</a>
+  <a href="#js-api" data-i18n="sidebar.js-api">JS API</a>
+  <a href="#scrollspy">Scroll Spy</a>
+  <a href="#auto-init" data-i18n="sidebar.auto-init">自动初始化</a>
+
+  <p class="doc-sidebar-title">
+    <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+    <span data-i18n="sidebar.resources">Resources</span>
+  </p>
+  <a href="icons/">Icons gallery</a>
+</aside>
+
+<!-- MAIN -->
+<main class="doc-main" id="main-content">
+
+<!-- ── INSTALL ── -->
+<div class="doc-section" id="install">
+  <!-- Hero logo — click to replay the reveal animation -->
+  <div class="syo-hero-logo" id="hero-logo" title="Click to replay">
+    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" class="sayo-logo-svg" style="overflow:visible">
+      <g class="logo-ring-l" style="transform-origin:12px 12px"><circle cx="12" cy="12" r="7.5" stroke="var(--syo-accent)" stroke-width="1.3"/></g>
+      <g class="logo-ring-r" style="transform-origin:12px 12px"><circle cx="12" cy="12" r="7.5" stroke="var(--syo-accent)" stroke-width="1.3"/></g>
+      <path class="logo-lens" d="M10.7 7.6a7.5 7.5 0 012.6 0 7.5 7.5 0 010 8.8 7.5 7.5 0 01-2.6 0 7.5 7.5 0 010-8.8z" fill="var(--syo-accent)"/>
+    </svg>
+    <span class="hero-text">Sayo UI</span>
+  </div>
+  <h1 data-i18n="install.heading">Sayo UI</h1>
+  <p class="syo-text-muted syo-mt-4" data-i18n="install.tagline">
+    零依赖 · CSS 变量驱动 · Sayo 交互内置 · GitHub Primer Dark 配色
+  </p>
+
+  <div class="demo-box syo-mt-6">
+    <p class="syo-text-sm syo-text-muted" data-i18n="install.desc">只需两个文件：</p>
+    <div class="code-block">&lt;link rel="stylesheet" href="sayo.css"&gt;
+&lt;script src="sayo.js"&gt;&lt;/script&gt;
+
+&lt;!-- 一行开启所有 Sayo 交互 --&gt;
+&lt;body data-syo-cursor data-syo-trail data-syo-ripple&gt;</div>
+  </div>
+</div>
+
+<!-- ── TOKENS ── -->
+<div class="doc-section" id="tokens">
+  <h2 data-i18n="tokens.heading">设计变量</h2>
+  <p class="syo-text-muted syo-mt-1" data-i18n="tokens.desc">所有视觉属性以 <code>--syo-*</code> CSS 变量暴露，全局覆盖即可换肤。</p>
+
+  <h3 id="colors" class="syo-mt-6" data-i18n="tokens.colors">配色</h3>
+  <div class="demo-box">
+    <div class="demo-row">
+      <span class="syo-tag">bg-base<span class="syo-tag-dot" style="background:#0d1117"></span></span>
+      <span class="syo-tag">bg-surface<span class="syo-tag-dot" style="background:#161b22"></span></span>
+      <span class="syo-tag">bg-elevated<span class="syo-tag-dot" style="background:#1c2129"></span></span>
+    </div>
+    <div class="demo-row">
+      <span class="syo-tag">--syo-red<span class="syo-tag-dot syo-tag-dot--red"></span></span>
+      <span class="syo-tag">--syo-orange<span class="syo-tag-dot syo-tag-dot--orange"></span></span>
+      <span class="syo-tag">--syo-yellow<span class="syo-tag-dot syo-tag-dot--yellow"></span></span>
+      <span class="syo-tag">--syo-green<span class="syo-tag-dot syo-tag-dot--green"></span></span>
+      <span class="syo-tag">--syo-blue<span class="syo-tag-dot syo-tag-dot--blue"></span></span>
+      <span class="syo-tag">--syo-purple<span class="syo-tag-dot syo-tag-dot--purple"></span></span>
+      <span class="syo-tag">--syo-cyan<span class="syo-tag-dot syo-tag-dot--cyan"></span></span>
+    </div>
+  </div>
+
+  <h3 id="typography" class="syo-mt-6" data-i18n="tokens.typography">字体排印</h3>
+  <div class="demo-box">
+    <h1>Heading 1 · 2rem</h1>
+    <h2 class="syo-mt-2">Heading 2 · 1.5rem</h2>
+    <h3 class="syo-mt-2">Heading 3 · 1.125rem</h3>
+    <p class="syo-mt-3">Body text · 15px · #c9d1d9. The quick brown fox jumps over the lazy dog. 红豆生南国，春来发几枝。</p>
+    <p class="syo-text-muted syo-mt-2">Muted text · #8b949e. Secondary information and descriptions.</p>
+    <p class="syo-text-mono syo-mt-3">Monospace: <code>inline code</code> and blocks.</p>
+  </div>
+</div>
+
+<!-- ── COMPONENTS ── -->
+<div class="doc-section" id="components">
+  <h2 data-i18n="components.heading">组件</h2>
+
+  <!-- Nav -->
+  <h3 id="comp-nav" class="syo-mt-6">Nav</h3>
+  <div class="demo-box" style="padding:0;overflow:hidden">
+    <nav class="syo-nav" style="position:static">
+      <span class="syo-nav-brand">Project</span>
+      <div class="syo-nav-links">
+        <a href="#">About</a>
+        <a href="#">Docs</a>
+        <a href="#">GitHub</a>
+      </div>
+    </nav>
+  </div>
+  <div class="code-block"><span class="syn" data-i18n="syn.nav-desc">&lt;!-- Use .syo-nav for the top bar --&gt;</span>
+&lt;nav class="syo-nav"&gt;
+  &lt;span class="syo-nav-brand"&gt;Project&lt;/span&gt;
+  &lt;div class="syo-nav-links"&gt;
+    &lt;a href="#"&gt;About&lt;/a&gt;
+    &lt;a href="#"&gt;Docs&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;</div>
+
+  <!-- Editor -->
+  <h3 id="comp-editor" class="syo-mt-6">Editor</h3>
+  <div class="demo-box">
+    <div class="syo-editor" style="max-width:500px">
+      <div class="syo-editor-titlebar">
+        <div class="syo-editor-dots">
+          <span class="syo-editor-dot syo-editor-dot--red"></span>
+          <span class="syo-editor-dot syo-editor-dot--yellow"></span>
+          <span class="syo-editor-dot syo-editor-dot--green"></span>
+        </div>
+        <span class="syo-editor-filename">main.rs</span>
+      </div>
+      <div class="syo-editor-body">
+        <div class="syo-editor-gutter"><span>1</span><span>2</span><span>3</span></div>
+        <div class="syo-editor-code">
+          <span class="line"><span class="syn-comment">// Hello, Sayo UI</span></span>
+          <span class="line"><span class="syn-keyword">fn</span> <span class="syn-func">main</span>() {</span>
+          <span class="line">    <span class="syn-macro">println!</span>(<span class="syn-string">"&hearts;"</span>);<span class="syo-editor-cursor"></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <h3 id="comp-card" class="syo-mt-6">Card</h3>
+  <div class="demo-box">
+    <div class="syo-grid-2">
+      <article class="syo-card">
+        <div class="syo-card-head">
+          <svg class="syo-card-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 1h10l3 3v13a2 2 0 01-2 2H4a2 2 0 01-2-2V3a2 2 0 012-2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 1v3h3M6 7h6M6 10h6M6 13h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <h3 class="syo-card-title"><a href="#">project-name</a></h3>
+        </div>
+        <p class="syo-card-desc">Card description. Hover to see the elastic lift effect — border changes color, card scales up slightly.</p>
+        <div class="syo-card-meta">
+          <span class="syo-tag-dot syo-tag-dot--blue"></span> TypeScript
+          <span>Updated today</span>
+        </div>
+      </article>
+      <article class="syo-card">
+        <div class="syo-card-head">
+          <svg class="syo-card-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M10 1v4m0 10v4M1 10h4m10 0h4M3.34 3.34l2.83 2.83m7.66 7.66l2.83 2.83M3.34 16.66l2.83-2.83M16.66 3.34l-2.83 2.83" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <h3 class="syo-card-title"><a href="#">dotfiles</a></h3>
+        </div>
+        <p class="syo-card-desc">Another project. All cards share the same spring physics on hover and press.</p>
+        <div class="syo-card-meta">
+          <span class="syo-tag-dot syo-tag-dot--green"></span> Shell
+          <span>Updated 1w ago</span>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- Tags -->
+  <h3 id="comp-tag" class="syo-mt-6">Tag</h3>
+  <div class="demo-box">
+    <div class="demo-row">
+      <span class="syo-tag"><span class="syo-tag-dot syo-tag-dot--blue"></span>C++</span>
+      <span class="syo-tag"><span class="syo-tag-dot syo-tag-dot--orange"></span>Rust</span>
+      <span class="syo-tag"><span class="syo-tag-dot syo-tag-dot--yellow"></span>Python</span>
+      <span class="syo-tag"><span class="syo-tag-dot syo-tag-dot--green"></span>Linux</span>
+      <span class="syo-tag"><span class="syo-tag-dot syo-tag-dot--red"></span>Git</span>
+      <span class="syo-tag"><span class="syo-tag-dot syo-tag-dot--purple"></span>Algorithms</span>
+    </div>
+    <p class="syo-text-muted syo-text-sm syo-mt-3">Hover: border turns accent + bouncy scale. Click: shrink press.</p>
+  </div>
+
+  <!-- Buttons -->
+  <h3 id="comp-btn" class="syo-mt-6">Button</h3>
+  <div class="demo-box">
+    <div class="demo-row">
+      <button class="syo-btn">Default</button>
+      <button class="syo-btn syo-btn--primary">Primary</button>
+      <button class="syo-btn syo-btn--ghost">Ghost</button>
+    </div>
+    <div class="demo-row syo-mt-3">
+      <button class="syo-btn syo-btn--sm">Small</button>
+      <button class="syo-btn">Medium</button>
+      <button class="syo-btn syo-btn--lg">Large</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <h3 id="comp-stat" class="syo-mt-6">Stat</h3>
+  <div class="demo-box">
+    <div class="syo-grid-3">
+      <div class="syo-stat"><span class="syo-stat-value">1,337</span><span class="syo-stat-label">Solved</span></div>
+      <div class="syo-stat"><span class="syo-stat-value">42</span><span class="syo-stat-label">Repos</span></div>
+      <div class="syo-stat"><span class="syo-stat-value">3yr</span><span class="syo-stat-label">Coding</span></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <h3 id="comp-toast" class="syo-mt-6">Toast Notification</h3>
+  <div class="demo-box">
+    <p class="syo-text-sm syo-text-muted syo-mb-4" data-i18n="comp-toast.desc">Sayo 风格弹性滑入通知，从右下角弹出。点击按钮触发：</p>
+    <div class="demo-row">
+      <button class="syo-btn syo-btn--sm" onclick="Sayo.toast.show('文件保存成功', {type:'success'})">Success</button>
+      <button class="syo-btn syo-btn--sm" onclick="Sayo.toast.show('连接超时，请重试', {type:'error'})">Error</button>
+      <button class="syo-btn syo-btn--sm" onclick="Sayo.toast.show('新版本 v2.1.0 已发布', {type:'info'})">Info</button>
+      <button class="syo-btn syo-btn--sm" onclick="Sayo.toast.show('免费额度即将用尽', {type:'warning'})">Warning</button>
+    </div>
+    <div class="code-block syo-mt-4">
+<span class="syn" data-i18n="syn.anywhere">// Anywhere in your code</span>
+Sayo.toast.show(<span class="syn-string">'文件保存成功'</span>, { type: <span class="syn-string">'success'</span> });
+Sayo.toast.show(<span class="syn-string">'连接超时，请重试'</span>, { type: <span class="syn-string">'error'</span>, duration: <span class="syn-number">6000</span> });
+Sayo.toast.show(<span class="syn-string">'新版本已发布'</span>, { type: <span class="syn-string">'info'</span> });
+Sayo.toast.show(<span class="syn-string">'额度即将用尽'</span>, { type: <span class="syn-string">'warning'</span> });</div>
+  </div>
+
+  <!-- CountUp -->
+  <h3 id="comp-countup" class="syo-mt-6">Count Up</h3>
+  <div class="demo-box">
+    <p class="syo-text-sm syo-text-muted syo-mb-4" data-i18n="comp-countup.desc">点击按钮触发数字跳动，Sayo 成绩结算风格。</p>
+    <div class="demo-row syo-mb-4">
+      <button class="syo-btn syo-btn--sm" id="btn-countup" data-i18n="comp-countup.trigger">触发计数</button>
+      <button class="syo-btn syo-btn--sm syo-btn--ghost" id="btn-countup-reset" data-i18n="comp-countup.reset">重置</button>
+    </div>
+    <div class="syo-grid-3">
+      <div class="syo-stat">
+        <span class="syo-stat-value" id="cu-1">0</span>
+        <span class="syo-stat-label">Solved</span>
+      </div>
+      <div class="syo-stat">
+        <span class="syo-stat-value" id="cu-2">0</span>
+        <span class="syo-stat-label">Repos</span>
+      </div>
+      <div class="syo-stat">
+        <span class="syo-stat-value" id="cu-3">0</span>
+        <span class="syo-stat-label">Years Coding</span>
+      </div>
+    </div>
+    <div class="code-block syo-mt-4">
+<span class="syn" data-i18n="syn.auto-trigger">&lt;!-- 属性自动触发（滚到可见区） --&gt;</span>
+&lt;span class="syo-stat-value" <strong>data-syo-countup="1337"</strong>&gt;0&lt;/span&gt;
+
+<span class="syn" data-i18n="syn.manual-trigger">// 手动触发</span>
+Sayo.countUp.animate(el, { <strong>to: 1337</strong>, duration: 2000 });</div>
+  </div>
+  <script>
+    (function() {
+      document.getElementById('btn-countup').addEventListener('click', function() {
+        Sayo.countUp.animate(document.getElementById('cu-1'), { to: 1337, duration: 3000 });
+        setTimeout(function() { Sayo.countUp.animate(document.getElementById('cu-2'), { to: 42, duration: 2500 }); }, 400);
+        setTimeout(function() { Sayo.countUp.animate(document.getElementById('cu-3'), { to: 3, duration: 2000 }); }, 800);
+      });
+      document.getElementById('btn-countup-reset').addEventListener('click', function() {
+        document.getElementById('cu-1').textContent = '0';
+        document.getElementById('cu-2').textContent = '0';
+        document.getElementById('cu-3').textContent = '0';
+      });
+    })();
+  </script>
+
+  <!-- Inertia Scroll -->
+  <h3 id="comp-inertia" class="syo-mt-6">Inertia Scroll</h3>
+  <div class="demo-box">
+    <p class="syo-text-sm syo-text-muted syo-mb-4" data-i18n="comp-inertia.desc">Sayo 选歌界面式惯性滚动。按住拖拽，松手后带惯性继续滑，摩擦减速停下。</p>
+    <div class="syo-inertia" data-syo-inertia style="padding-bottom:8px">
+      <article class="syo-card" style="width:240px;margin-right:12px">
+        <div class="syo-card-head"><h3 class="syo-card-title">Card Alpha</h3></div>
+        <p class="syo-card-desc">Drag sideways to scroll. Release to see momentum carry.</p>
+      </article>
+      <article class="syo-card" style="width:240px;margin-right:12px">
+        <div class="syo-card-head"><h3 class="syo-card-title">Card Beta</h3></div>
+        <p class="syo-card-desc">Like Sayo song select — flick and it keeps going.</p>
+      </article>
+      <article class="syo-card" style="width:240px;margin-right:12px">
+        <div class="syo-card-head"><h3 class="syo-card-title">Card Gamma</h3></div>
+        <p class="syo-card-desc">Velocity-based. Faster flick = longer glide.</p>
+      </article>
+      <article class="syo-card" style="width:240px;margin-right:12px">
+        <div class="syo-card-head"><h3 class="syo-card-title">Card Delta</h3></div>
+        <p class="syo-card-desc">Friction 0.92. Natural deceleration.</p>
+      </article>
+      <article class="syo-card" style="width:240px;margin-right:12px">
+        <div class="syo-card-head"><h3 class="syo-card-title">Card Epsilon</h3></div>
+        <p class="syo-card-desc">Stops when velocity drops below threshold.</p>
+      </article>
+    </div>
+    <div class="code-block syo-mt-4">
+<span class="syn" data-i18n="syn.inertia-desc">&lt;!-- One attribute enables inertia --&gt;</span>
+&lt;div class="syo-inertia" <strong>data-syo-inertia</strong>&gt;
+  &lt;div class="syo-card"&gt;...&lt;/div&gt;
+  &lt;div class="syo-card"&gt;...&lt;/div&gt;
+&lt;/div&gt;</div>
+  </div>
+
+  <!-- Form -->
+  <h3 id="comp-form" class="syo-mt-6">Form</h3>
+  <div class="demo-box">
+    <div class="demo-row" style="gap:var(--syo-space-6);align-items:flex-start">
+      <!-- Standard input -->
+      <div class="syo-form-group" style="flex:1;min-width:200px;margin-bottom:var(--syo-space-4)">
+        <label class="syo-form-label" data-i18n="comp-form.username">用户名</label>
+        <div class="syo-input-icon">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M3 18c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input class="syo-input" type="text" placeholder="Enter username">
+        </div>
+        <span class="syo-form-hint" data-i18n="comp-form.username-hint">带前导图标 — 聚焦时图标变蓝。</span>
+      </div>
+      <!-- Floating label -->
+      <div class="syo-form-group" style="flex:1;min-width:200px;margin-bottom:var(--syo-space-4)">
+        <label class="syo-form-label" data-i18n="comp-form.email">邮箱（浮动标签）</label>
+        <div class="syo-input-floating">
+          <input class="syo-input" type="email" placeholder=" ">
+          <span class="syo-floating-label">you@example.com</span>
+        </div>
+        <span class="syo-form-hint" data-i18n="comp-form.email-hint">点击输入框 — 标签弹性上浮。</span>
+      </div>
+    </div>
+    <div class="syo-form-group" style="max-width:360px;margin-bottom:var(--syo-space-4)">
+      <label class="syo-form-label" data-i18n="comp-form.role">角色</label>
+      <select class="syo-select">
+        <option>Developer</option>
+        <option>Designer</option>
+        <option>Manager</option>
+      </select>
+    </div>
+    <div class="demo-row" style="gap:var(--syo-space-4)">
+      <label class="syo-checkbox"><input type="checkbox" checked><span class="syo-checkmark"></span><span data-i18n="comp-form.remember">记住我</span></label>
+      <label class="syo-radio"><input type="radio" name="demo-radio" checked><span class="syo-radiomark"></span>Public</label>
+      <label class="syo-radio"><input type="radio" name="demo-radio"><span class="syo-radiomark"></span>Private</label>
+    </div>
+    <p class="syo-text-sm syo-text-muted syo-mt-3" data-i18n="comp-form.form-hint">勾选 / 点击试试 — 切换时有弹性弹入动画。</p>
+    <div class="code-block syo-mt-4">
+<span class="syn" data-i18n="syn.floating-label">&lt;!-- Floating label (elastic spring-up) --&gt;</span>
+&lt;div class="syo-input-floating"&gt;
+  &lt;input class="syo-input" type="email" placeholder=" "&gt;
+  &lt;span class="syo-floating-label"&gt;you@example.com&lt;/span&gt;
+&lt;/div&gt;
+
+<span class="syn" data-i18n="syn.input-icon">&lt;!-- Input with leading icon --&gt;</span>
+&lt;div class="syo-input-icon"&gt;
+  &lt;svg&gt;...&lt;/svg&gt;
+  &lt;input class="syo-input" type="text"&gt;
+&lt;/div&gt;
+
+<span class="syn" data-i18n="syn.checkbox-radio">&lt;!-- Checkbox / Radio — spring-pop animation on check --&gt;</span>
+&lt;label class="syo-checkbox"&gt;&lt;input type="checkbox"&gt;&lt;span class="syo-checkmark"&gt;&lt;/span&gt;Label&lt;/label&gt;
+&lt;label class="syo-radio"&gt;&lt;input type="radio" name="grp"&gt;&lt;span class="syo-radiomark"&gt;&lt;/span&gt;Option&lt;/label&gt;</div>
+  </div>
+
+  <!-- Dialog -->
+  <h3 id="comp-dialog" class="syo-mt-6">Dialog</h3>
+  <div class="demo-box">
+    <p class="syo-text-sm syo-text-muted syo-mb-4" data-i18n="comp-dialog.desc">Sayo 风格弹性缩放弹窗。点击试试：</p>
+    <div class="demo-row">
+      <button class="syo-btn syo-btn--sm" id="btn-dialog-show" data-i18n="comp-dialog.custom">自定义弹窗</button>
+      <button class="syo-btn syo-btn--sm syo-btn--primary" id="btn-dialog-confirm" data-i18n="comp-dialog.confirm">确认框</button>
+      <button class="syo-btn syo-btn--sm" id="btn-dialog-alert" data-i18n="comp-dialog.alert">提示框</button>
+    </div>
+    <div class="code-block syo-mt-4">
+<span class="syn" data-i18n="syn.custom-dialog">// Custom dialog</span>
+Sayo.dialog.show({
+  title: 'Settings',
+  body: '&lt;p&gt;Content here&lt;/p&gt;',
+  footer: '&lt;button class="syo-btn syo-btn--sm syo-btn--primary"&gt;Save&lt;/button&gt;',
+});
+
+<span class="syn" data-i18n="syn.confirm-dialog">// Confirm — returns Promise&lt;boolean&gt;</span>
+const ok = await Sayo.dialog.confirm({ title: 'Delete', message: 'Are you sure?' });
+
+<span class="syn" data-i18n="syn.alert-dialog">// Alert — returns Promise&lt;void&gt;</span>
+await Sayo.dialog.alert({ title: 'Done', message: 'File saved.' });</div>
+  </div>
+  <script>
+    (function() {
+      document.getElementById('btn-dialog-show').addEventListener('click', function() {
+        Sayo.dialog.show({
+          title: 'Settings',
+          body: '<p>Configure your project preferences. Changes take effect immediately.</p>',
+          footer: [
+            (function() { var b = document.createElement('button'); b.className = 'syo-btn syo-btn--sm syo-btn--ghost'; b.textContent = 'Cancel'; b.addEventListener('click', function() { Sayo.dialog.close(); }); return b; })(),
+            (function() { var b = document.createElement('button'); b.className = 'syo-btn syo-btn--sm syo-btn--primary'; b.textContent = 'Save'; b.addEventListener('click', function() { Sayo.dialog.close(); Sayo.toast.show('Settings saved', {type:'success'}); }); return b; })()
+          ]
+        });
+      });
+      document.getElementById('btn-dialog-confirm').addEventListener('click', function() {
+        Sayo.dialog.confirm({ title: 'Delete file', message: 'This action cannot be undone. Are you sure?' }).then(function(ok) {
+          Sayo.toast.show(ok ? 'Deleted' : 'Cancelled', { type: ok ? 'error' : 'info' });
+        });
+      });
+      document.getElementById('btn-dialog-alert').addEventListener('click', function() {
+        Sayo.dialog.alert({ title: 'Upload complete', message: 'All 3 files have been uploaded successfully.' }).then(function() {
+          Sayo.toast.show('Acknowledged', { type: 'success' });
+        });
+      });
+    })();
+  </script>
+
+  <!-- Toggle -->
+  <h3 id="comp-toggle" class="syo-mt-6">Toggle</h3>
+  <div class="demo-box">
+    <p class="syo-text-sm syo-text-muted syo-mb-4" data-i18n="comp-toggle.desc">
+      通用 pill 滑块开关。基础版干净克制，主题版带日月天空动画。纯 CSS 驱动，checkbox 控制。
+    </p>
+
+    <!-- Base toggle examples -->
+    <div class="demo-row syo-mb-4" style="align-items:center;gap:var(--syo-space-6)">
+      <label class="syo-toggle">
+        <input type="checkbox">
+        <span class="syo-toggle-track"></span>
+        <span class="syo-toggle-knob"></span>
+      </label>
+      <label class="syo-toggle">
+        <input type="checkbox" checked>
+        <span class="syo-toggle-track"></span>
+        <span class="syo-toggle-knob"></span>
+      </label>
+      <label class="syo-toggle syo-toggle--sm">
+        <input type="checkbox">
+        <span class="syo-toggle-track"></span>
+        <span class="syo-toggle-knob"></span>
+      </label>
+      <label class="syo-toggle">
+        <input type="checkbox" disabled>
+        <span class="syo-toggle-track"></span>
+        <span class="syo-toggle-knob"></span>
+      </label>
+    </div>
+    <p class="syo-text-xs syo-text-muted syo-mb-4" data-i18n="comp-toggle.labels">默认 · 已选 · 小号 · 禁用</p>
+
+    <!-- Theme variant -->
+    <p class="syo-text-sm syo-text-muted syo-mb-3" data-i18n="comp-toggle.theme-desc">主题变体 <code>.syo-toggle-theme</code> — 日月切换，天空渐变，星星点缀：</p>
+    <div class="demo-row syo-mb-4" style="align-items:center;gap:var(--syo-space-4)">
+      <label class="syo-toggle syo-toggle-theme">
+        <input type="checkbox">
+        <span class="syo-toggle-track"></span>
+        <span class="syo-toggle-knob">
+          <svg class="syo-toggle-sun" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3.5" stroke="#f57c00" stroke-width="1.5"/><path d="M10 2v2.5M10 15.5V18M2 10h2.5M15.5 10H18M4.34 4.34l1.77 1.77M13.89 13.89l1.77 1.77M4.34 15.66l1.77-1.77M13.89 6.11l1.77-1.77" stroke="#f57c00" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <svg class="syo-toggle-moon" viewBox="0 0 20 20" fill="none"><path d="M16.5 12.5A6 6 0 019 4.5a6 6 0 007.5 8z" stroke="#5c6bc0" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </span>
+      </label>
+      <span class="syo-text-xs syo-text-muted" data-i18n="comp-toggle.try-it">← 点一下</span>
+    </div>
+
+    <div class="code-block">
+<span class="syn" data-i18n="syn.base-toggle">&lt;!-- Base toggle — clean, any binary switch --&gt;</span>
+&lt;label class="syo-toggle"&gt;
+  &lt;input type="checkbox"&gt;
+  &lt;span class="syo-toggle-track"&gt;&lt;/span&gt;
+  &lt;span class="syo-toggle-knob"&gt;&lt;/span&gt;
+&lt;/label&gt;
+
+<span class="syn" data-i18n="syn.small-variant">&lt;!-- Small variant --&gt;</span>
+&lt;label class="syo-toggle syo-toggle--sm"&gt;...&lt;/label&gt;
+
+<span class="syn" data-i18n="syn.theme-variant">&lt;!-- Theme variant — day/night with sun, moon, stars --&gt;</span>
+&lt;label class="syo-toggle syo-toggle-theme"&gt;
+  &lt;input type="checkbox"&gt;
+  &lt;span class="syo-toggle-track"&gt;&lt;/span&gt;
+  &lt;span class="syo-toggle-knob"&gt;
+    &lt;svg class="syo-toggle-sun"&gt;...&lt;/svg&gt;
+    &lt;svg class="syo-toggle-moon"&gt;...&lt;/svg&gt;
+  &lt;/span&gt;
+&lt;/label&gt;</div>
+  </div>
+</div>
+
+<!-- ── LIGHT THEME ── -->
+<div class="doc-section" id="theme">
+  <h2 data-i18n="theme.heading">浅色 / 深色主题</h2>
+  <p class="syo-text-muted syo-mt-1" data-i18n="theme.desc">Sayo UI 默认深色。给 <code>&lt;html&gt;</code> 添加 <code>data-syo-theme="light"</code> 即可切换 GitHub Primer Light 配色。</p>
+
+  <div class="code-block syo-mt-4">
+<span class="syn" data-i18n="syn.light-theme">&lt;!-- Light theme — add to &lt;html&gt; --&gt;</span>
+&lt;html <strong>data-syo-theme="light"</strong>&gt;
+
+<span class="syn" data-i18n="syn.toggle-runtime">// Toggle at runtime</span>
+document.documentElement.setAttribute('data-syo-theme', 'light');
+document.documentElement.removeAttribute('data-syo-theme'); <span class="syn" data-i18n="syn.back-to-dark">// back to dark</span></div>
+
+  <p class="syo-text-sm syo-text-muted syo-mt-4" data-i18n="theme.runtime">
+    导航栏的主题切换按钮可以实时切换。所有 <code>--syo-*</code> 变量即时更新——背景、文字、边框、功能色、语法高亮全部适配。
+  </p>
+</div>
+
+<!-- ── MOTION ── -->
+<div class="doc-section" id="motion">
+  <h2 data-i18n="motion.heading">动效 & Sayo 交互</h2>
+  <p class="syo-text-muted" data-i18n="motion.desc">本页所有交互都在生效——现在就可以试试。</p>
+
+  <div class="syo-grid-2 syo-mt-4">
+    <div class="syo-card">
+      <div class="syo-card-head"><h3 class="syo-card-title" data-i18n="motion.cursor-title">自定义光标</h3></div>
+      <p class="syo-card-desc" data-i18n="motion.cursor-desc">全局圆环光标替代系统指针。按下放大 (CursorExpand)。光晕全程跟随。</p>
+    </div>
+    <div class="syo-card">
+      <div class="syo-card-head"><h3 class="syo-card-title" data-i18n="motion.trail-title">平滑拖尾</h3></div>
+      <p class="syo-card-desc" data-i18n="motion.trail-desc">25 点折线彗尾跟随光标。从亮/粗渐变到透明。</p>
+    </div>
+    <div class="syo-card">
+      <div class="syo-card-head"><h3 class="syo-card-title" data-i18n="motion.flash-title">点击闪烁</h3></div>
+      <p class="syo-card-desc" data-i18n="motion.flash-desc">点击位置径向脉冲——每次交互即时反馈。</p>
+    </div>
+    <div class="syo-card">
+      <div class="syo-card-head"><h3 class="syo-card-title" data-i18n="motion.spring-title">弹性物理</h3></div>
+      <p class="syo-card-desc" data-i18n="motion.spring-desc">所有卡片、标签、按钮、链接在悬停/按下时使用弹簧缓动。就是<em>手感好</em>。</p>
+    </div>
+  </div>
+
+  <div class="syo-card syo-mt-4" style="border-color:var(--syo-yellow);background:rgba(210,153,34,0.05)">
+    <div class="syo-card-head">
+      <svg class="syo-card-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--syo-yellow)"><path d="M10 1v12m0 0l-4-4m4 4l4-4M10 19V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h3 class="syo-card-title" style="color:var(--syo-yellow)" data-i18n="motion.troubleshoot-title">疑难解答：光晕/拖尾不显示？</h3>
+    </div>
+    <p class="syo-card-desc" data-i18n="motion.troubleshoot-desc">
+      如果你看不到光晕(glow)和拖尾(trail)，最可能的原因是系统开启了<strong>"减少动效"</strong>。
+      Sayo UI 遵循 <code>prefers-reduced-motion: reduce</code>，检测到该设置时会静默跳过装饰性动效（只保留基础光标圆环以确保可用性）。
+    </p>
+    <div class="code-block syo-mt-3" style="font-size:0.75rem;padding:10px 14px">
+<span class="syn" data-i18n="syn.troubleshoot-diag">// 浏览器控制台快速诊断</span>
+matchMedia('(prefers-reduced-motion: reduce)').matches  <span class="syn" data-i18n="syn.troubleshoot-motion">// true = 动效被跳过</span>
+!!document.getElementById('syo-cursor')                 <span class="syn" data-i18n="syn.troubleshoot-cursor">// true = 光标正常</span>
+!!document.getElementById('syo-cursor-canvas')          <span class="syn" data-i18n="syn.troubleshoot-glow">// true = 光晕正常</span>
+
+<span class="syn" data-i18n="syn.troubleshoot-devtools">// Chrome DevTools → Rendering 标签 → 取消勾选 "Emulate CSS prefers-reduced-motion"</span></div>
+    <p class="syo-card-desc syo-mt-3">
+      <span data-i18n="motion.troubleshoot-more">详细排查步骤见</span> <a href="README.md"><code>README.md → Troubleshooting</code></a>。
+    </p>
+  </div>
+</div>
+
+<!-- ── JS API ── -->
+<div class="doc-section" id="js-api">
+  <h2 data-i18n="js-api.heading">JavaScript API</h2>
+  <p class="syo-text-muted" data-i18n="js-api.desc">所有模块通过 <code>window.Sayo</code> 暴露。使用 API 可以精细控制。</p>
+
+  <h3 class="syo-mt-6">Sayo.cursor</h3>
+  <div class="code-block"><span class="syn" data-i18n="syn.init-settings">// Init with custom settings</span>
+Sayo.cursor.init({
+  size: 16,
+  accentR: 88, accentG: 166, accentB: 255,  <span class="syn">// #58a6ff</span>
+});
+
+<span class="syn" data-i18n="syn.cleanup">// Clean up</span>
+Sayo.cursor.destroy();</div>
+
+  <h3 class="syo-mt-6">Sayo.trail</h3>
+  <div class="code-block"><span class="syn" data-i18n="syn.global-trail">// Global trail</span>
+Sayo.trail.init();
+
+<span class="syn" data-i18n="syn.scoped-trail">// Scoped to a container</span>
+Sayo.trail.init({ container: '#hero-area', maxLength: 20 });</div>
+
+  <h3 class="syo-mt-6">Sayo.ripple</h3>
+  <div class="code-block"><span class="syn" data-i18n="syn.global-flash">// Global flash, ripple inside [data-syo-ripple] containers</span>
+Sayo.ripple.init();</div>
+
+  <h3 class="syo-mt-6">Sayo.parallax</h3>
+  <div class="code-block"><span class="syn" data-i18n="syn.parallax-desc">// Make an element shift with mouse</span>
+Sayo.parallax.init('#my-hero', { maxShift: 10 });</div>
+
+  <h3 class="syo-mt-6">Sayo.reveal</h3>
+  <div class="code-block"><span class="syn" data-i18n="syn.auto-init">// Auto-inits on DOMContentLoaded</span>
+<span class="syn" data-i18n="syn.reveal-desc">// Add .syo-reveal class to elements you want animated</span></div>
+</div>
+
+<!-- ── SCROLL SPY ── -->
+<div class="doc-section" id="scrollspy">
+  <h2 data-i18n="scrollspy.heading">Scroll Spy</h2>
+  <p class="syo-text-muted syo-mt-1" data-i18n="scrollspy.desc">滚动时自动高亮侧边栏当前链接。一个属性即可启用。</p>
+
+  <div class="demo-box syo-mt-4">
+    <p class="syo-text-sm syo-text-muted syo-mb-3" data-i18n="scrollspy.demo-desc">本页左侧边栏就是 Scroll Spy 的实时演示——滚动页面，当前区域对应的链接会自动高亮为紫色。</p>
+
+    <h4 class="syo-mt-4" data-i18n="scrollspy.attr-usage">Attribute 用法</h4>
+    <div class="code-block">
+<span class="syn" data-i18n="syn.scrollspy-attr">&lt;!-- 属性值 = 滚动偏移量 (px)，通常 = nav 高度 --&gt;</span>
+&lt;aside class="doc-sidebar" <strong>data-syo-scrollspy="100"</strong>&gt;
+  &lt;a href="#install"&gt;Install&lt;/a&gt;
+  &lt;a href="#tokens"&gt;Tokens&lt;/a&gt;
+  ...
+&lt;/aside&gt;</div>
+
+    <h4 class="syo-mt-4" data-i18n="scrollspy.js-api">JS API</h4>
+    <div class="code-block">
+<span class="syn" data-i18n="syn.scrollspy-init">// 手动初始化</span>
+Sayo.scrollSpy.init({
+  nav: '.doc-sidebar',   <span class="syn" data-i18n="syn.scrollspy-nav">// 包含链接的容器</span>
+  offset: 100,            <span class="syn" data-i18n="syn.scrollspy-offset">// 滚动偏移，扣除固定导航栏高度</span>
+  activeClass: 'active',  <span class="syn" data-i18n="syn.scrollspy-class">// 激活链接的 CSS class（默认 'active'）</span>
+});
+
+<span class="syn" data-i18n="syn.scrollspy-destroy">// 销毁</span>
+Sayo.scrollSpy.destroy();</div>
+
+    <h4 class="syo-mt-4" data-i18n="scrollspy.how-it-works">工作原理</h4>
+    <p class="syo-text-sm syo-text-muted" data-i18n="scrollspy.how-it-works-desc">
+      模块查找容器内所有 <code>&lt;a href="#..."&gt;</code> 链接，定位对应目标元素，在 <code>scroll</code> 事件中判断当前处于哪个区域，为对应链接添加 <code>active</code> class。配合 CSS 的 <code>.active</code> 样式实现紫色左边框 + 紫底高亮效果。
+    </p>
+  </div>
+</div>
+
+<!-- ── AUTO-INIT ── -->
+<div class="doc-section" id="auto-init">
+  <h2 data-i18n="auto-init.heading">属性自动初始化</h2>
+  <p class="syo-text-muted" data-i18n="auto-init.desc">在 <code>&lt;body&gt;</code> 或任意容器上加 <code>data-syo-*</code> 属性，无需写 JS。</p>
+
+  <table class="syo-table syo-mt-4">
+    <thead>
+      <tr>
+        <th>Attribute</th>
+        <th>Effect</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>data-syo-cursor</code></td>
+        <td>Enable global custom cursor + glow</td>
+      </tr>
+      <tr>
+        <td><code>data-syo-trail</code></td>
+        <td>Enable global smooth trail</td>
+      </tr>
+      <tr>
+        <td><code>data-syo-ripple</code></td>
+        <td>Mark container for click ripple (global flash always on)</td>
+      </tr>
+      <tr>
+        <td><code>data-syo-parallax</code></td>
+        <td>Element shifts with mouse in parent (value = max px)</td>
+      </tr>
+      <tr>
+        <td><code>.syo-reveal</code></td>
+        <td>Scroll-triggered staggered entrance (CSS class)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="code-block syo-mt-6"><span class="syn" data-i18n="syn.page-demo">&lt;!-- The page you're looking at right now --&gt;</span>
+&lt;body data-syo-cursor data-syo-trail&gt;
+  &lt;section data-syo-ripple&gt;
+    &lt;h1 class="syo-reveal"&gt;Hello&lt;/h1&gt;
+  &lt;/section&gt;
+&lt;/body&gt;</div>
+</div>
+
+<!-- FOOTER -->
+<footer class="syo-border-top syo-mt-6 syo-py-12 syo-flex-between syo-flex-wrap">
+  <span class="syo-text-sm syo-text-muted" data-i18n="footer.tagline">Sayo UI — GitHub Primer Dark + Sayo</span>
+  <span class="syo-text-sm syo-text-muted" data-i18n="footer.stats">2 个文件 · 0 依赖 · ~15 KB gzipped</span>
+</footer>
+
+</main>
+</div>
+
+<script src="sayo.js"></script>
+<script>
+  /* ═══════════════════════════════════════════════════════════════
+     i18n — lightweight Chinese/English switching
+     data-i18n="key" on text nodes
+     data-i18n-attr="placeholder|title|..." for attributes
+     ═══════════════════════════════════════════════════════════════ */
+  (function() {
+    var LANG_KEY = 'sayo-lang';
+    var currentLang = localStorage.getItem(LANG_KEY) || 'zh';
+
+    var t = {
+      zh: {
+        /* Nav */
+        'nav.install': '安装',
+        'nav.tokens': '变量',
+        'nav.components': '组件',
+        'nav.motion': '动效',
+        'nav.js': 'API',
+
+        /* Sidebar */
+        'sidebar.getting-started': '快速开始',
+        'sidebar.install': '安装',
+        'sidebar.quick-start': '快速开始',
+        'sidebar.tokens': '设计变量',
+        'sidebar.css-vars': 'CSS 变量',
+        'sidebar.colors': '配色',
+        'sidebar.typography': '字体排印',
+        'sidebar.components': '组件',
+        'sidebar.nav': '导航栏',
+        'sidebar.editor': '代码编辑器',
+        'sidebar.card': '卡片',
+        'sidebar.tag': '标签',
+        'sidebar.btn': '按钮',
+        'sidebar.stat': '统计',
+        'sidebar.toast': '通知',
+        'sidebar.countup': '数字跳动',
+        'sidebar.inertia': '惯性滚动',
+        'sidebar.form': '表单',
+        'sidebar.dialog': '对话框',
+        'sidebar.theme': '主题',
+        'sidebar.motion-js': '动效 & JS',
+        'sidebar.motion': '动效',
+        'sidebar.js-api': 'JS API',
+        'sidebar.auto-init': '自动初始化',
+
+        /* Install */
+        'install.heading': 'Sayo UI',
+        'install.tagline': '零依赖 · CSS 变量驱动 · Sayo 交互内置 · GitHub Primer 配色',
+        'install.desc': '只需两个文件：',
+
+        /* Tokens */
+        'tokens.heading': '设计变量',
+        'tokens.desc': '所有视觉属性以 <code>--syo-*</code> CSS 变量暴露，全局覆盖即可换肤。',
+        'tokens.colors': '配色',
+        'tokens.typography': '字体排印',
+
+        /* Components */
+        'components.heading': '组件',
+        'comp-nav.desc': '使用 .syo-nav 作为顶部导航栏',
+        'comp-editor.desc': '代码编辑器，带标题栏、行号和语法高亮',
+        'comp-card.desc': '悬停弹性上浮。边框变色，卡片微微放大。',
+        'comp-tag.desc': '悬停：边框变主题色 + 弹性缩放。点击：缩小按下。',
+        'comp-btn.desc': '弹性物理 — 悬停弹入，点击按下。',
+        'comp-stat.desc': '数据统计卡片，等宽数字字体。',
+        'comp-toast.desc': 'Sayo 风格弹性滑入通知，从右下角弹出。点击按钮触发：',
+        'comp-countup.desc': '点击按钮触发数字跳动，Sayo 成绩结算风格。',
+        'comp-countup.trigger': '触发计数',
+        'comp-countup.reset': '重置',
+        'comp-inertia.desc': 'Sayo 选歌界面式惯性滚动。按住拖拽，松手后带惯性继续滑，摩擦减速停下。',
+        'comp-inertia.code-desc': '一个属性即可启用惯性',
+        'comp-form.desc': '聚焦辉光、浮动标签弹性动画、checkbox/radio 弹簧弹入。',
+        'comp-form.username': '用户名',
+        'comp-form.username-hint': '带前导图标 — 聚焦时图标变蓝。',
+        'comp-form.email': '邮箱（浮动标签）',
+        'comp-form.email-hint': '点击输入框 — 标签弹性上浮。',
+        'comp-form.role': '角色',
+        'comp-form.remember': '记住我',
+        'comp-form.form-hint': '勾选 / 点击试试 — 切换时有弹性弹入动画。',
+        'comp-dialog.desc': 'Sayo 风格弹性缩放弹窗。点击试试：',
+        'comp-dialog.custom': '自定义弹窗',
+        'comp-dialog.confirm': '确认框',
+        'comp-dialog.alert': '提示框',
+
+        /* Theme */
+        'theme.heading': '浅色 / 深色主题',
+        'theme.desc': 'Sayo UI 默认深色。给 <code>&lt;html&gt;</code> 添加 <code>data-syo-theme="light"</code> 即可切换 GitHub Primer Light 配色。',
+        'theme.runtime': '导航栏的主题切换按钮可以实时切换。所有 <code>--syo-*</code> 变量即时更新——背景、文字、边框、功能色、语法高亮全部适配。',
+
+        /* Motion */
+        'motion.heading': '动效 & Sayo 交互',
+        'motion.desc': '本页所有交互都在生效——现在就可以试试。',
+        'motion.cursor-title': '自定义光标',
+        'motion.cursor-desc': '全局圆环光标替代系统指针。按下放大 (CursorExpand)。光晕全程跟随。',
+        'motion.trail-title': '平滑拖尾',
+        'motion.trail-desc': '25 点折线彗尾跟随光标。从亮/粗渐变到透明。',
+        'motion.flash-title': '点击闪烁',
+        'motion.flash-desc': '点击位置径向脉冲——每次交互即时反馈。',
+        'motion.spring-title': '弹性物理',
+        'motion.spring-desc': '所有卡片、标签、按钮、链接在悬停/按下时使用弹簧缓动。就是<em>手感好</em>。',
+        'motion.troubleshoot-title': '疑难解答：光晕/拖尾不显示？',
+        'motion.troubleshoot-desc': '如果你看不到光晕(glow)和拖尾(trail)，最可能的原因是系统开启了<strong>"减少动效"</strong>。Sayo UI 遵循 <code>prefers-reduced-motion: reduce</code>，检测到该设置时会静默跳过装饰性动效（只保留基础光标圆环以确保可用性）。',
+
+        /* JS API */
+        'js-api.heading': 'JavaScript API',
+        'js-api.desc': '所有模块通过 <code>window.Sayo</code> 暴露。使用 API 可以精细控制。',
+
+        /* Auto-init */
+        'auto-init.heading': '属性自动初始化',
+        'auto-init.desc': '在 <code>&lt;body&gt;</code> 或任意容器上加 <code>data-syo-*</code> 属性，无需写 JS。',
+
+        /* Footer */
+        'footer.tagline': 'Sayo UI — GitHub Primer Dark + Sayo',
+        'footer.stats': '2 个文件 · 0 依赖 · ~15 KB gzipped',
+
+        /* Sidebar extras */
+        'sidebar.toggle': '开关',
+        'sidebar.resources': '资源',
+
+        /* Toggle section */
+        'comp-toggle.desc': '通用 pill 滑块开关。基础版干净克制，主题版带日月天空动画。纯 CSS 驱动，checkbox 控制。',
+        'comp-toggle.labels': '默认 · 已选 · 小号 · 禁用',
+        'comp-toggle.theme-desc': '主题变体 <code>.syo-toggle-theme</code> — 日月切换，天空渐变，星星点缀：',
+        'comp-toggle.try-it': '← 点一下',
+
+        /* Scroll spy */
+        'scrollspy.heading': 'Scroll Spy',
+        'scrollspy.desc': '滚动时自动高亮侧边栏当前链接。一个属性即可启用。',
+        'scrollspy.demo-desc': '本页左侧边栏就是 Scroll Spy 的实时演示——滚动页面，当前区域对应的链接会自动高亮为紫色。',
+        'scrollspy.attr-usage': 'Attribute 用法',
+        'scrollspy.js-api': 'JS API',
+        'scrollspy.how-it-works': '工作原理',
+        'scrollspy.how-it-works-desc': '模块查找容器内所有 <code>&lt;a href="#..."&gt;</code> 链接，定位对应目标元素，在 <code>scroll</code> 事件中判断当前处于哪个区域，为对应链接添加 <code>active</code> class。配合 CSS 的 <code>.active</code> 样式实现紫色左边框 + 紫底高亮效果。',
+
+        /* Troubleshoot */
+        'motion.troubleshoot-more': '详细排查步骤见',
+
+        /* Code comments */
+        'syn.nav-desc': '&lt;!-- 使用 .syo-nav 作为顶部导航栏 --&gt;',
+        'syn.anywhere': '// 代码中任意位置',
+        'syn.auto-trigger': '&lt;!-- 属性自动触发（滚到可见区） --&gt;',
+        'syn.manual-trigger': '// 手动触发',
+        'syn.inertia-desc': '&lt;!-- 一个属性即可启用惯性 --&gt;',
+        'syn.floating-label': '&lt;!-- 浮动标签（弹性上浮） --&gt;',
+        'syn.input-icon': '&lt;!-- 带前导图标的输入框 --&gt;',
+        'syn.checkbox-radio': '&lt;!-- Checkbox / Radio — 点击弹簧弹入 --&gt;',
+        'syn.custom-dialog': '// 自定义弹窗',
+        'syn.confirm-dialog': '// 确认框 — 返回 Promise&lt;boolean&gt;',
+        'syn.alert-dialog': '// 提示框 — 返回 Promise&lt;void&gt;',
+        'syn.base-toggle': '&lt;!-- 基础 toggle — 简洁的二元开关 --&gt;',
+        'syn.small-variant': '&lt;!-- 小号变体 --&gt;',
+        'syn.theme-variant': '&lt;!-- 主题变体 — 日月星空 --&gt;',
+        'syn.light-theme': '&lt;!-- 浅色主题 — 添加到 &lt;html&gt; --&gt;',
+        'syn.toggle-runtime': '// 运行时切换',
+        'syn.back-to-dark': '// 回到暗色',
+        'syn.init-settings': '// 自定义设置初始化',
+        'syn.accent-hex': '// #58a6ff',
+        'syn.cleanup': '// 清理',
+        'syn.global-trail': '// 全局拖尾',
+        'syn.scoped-trail': '// 限定到容器',
+        'syn.global-flash': '// 全局闪烁，ripple 在 [data-syo-ripple] 容器内',
+        'syn.parallax-desc': '// 让元素随鼠标移动',
+        'syn.auto-init': '// DOMContentLoaded 时自动初始化',
+        'syn.reveal-desc': '// 给需要动画的元素加 .syo-reveal',
+        'syn.scrollspy-attr': '&lt;!-- 属性值 = 滚动偏移量 (px)，通常 = nav 高度 --&gt;',
+        'syn.scrollspy-init': '// 手动初始化',
+        'syn.scrollspy-nav': '// 包含链接的容器',
+        'syn.scrollspy-offset': '// 滚动偏移，扣除固定导航栏高度',
+        'syn.scrollspy-class': '// 激活链接的 CSS class',
+        'syn.scrollspy-destroy': '// 销毁',
+        'syn.page-demo': '&lt;!-- 你现在看到的这个页面 --&gt;',
+        'syn.troubleshoot-diag': '// 浏览器控制台快速诊断',
+        'syn.troubleshoot-motion': '// true = 动效被跳过',
+        'syn.troubleshoot-cursor': '// true = 光标正常',
+        'syn.troubleshoot-glow': '// true = 光晕正常',
+        'syn.troubleshoot-devtools': '// Chrome DevTools → Rendering 标签 → 取消勾选 "Emulate CSS prefers-reduced-motion"',
+
+        /* lang toggle */
+        'lang.switch': 'EN',
+        'lang.title': '切换到英文',
+      },
+      en: {
+        'nav.install': 'Install',
+        'nav.tokens': 'Tokens',
+        'nav.components': 'Components',
+        'nav.motion': 'Motion',
+        'nav.js': 'API',
+
+        'sidebar.getting-started': 'Getting Started',
+        'sidebar.install': 'Install',
+        'sidebar.quick-start': 'Quick Start',
+        'sidebar.tokens': 'Design Tokens',
+        'sidebar.css-vars': 'CSS Variables',
+        'sidebar.colors': 'Colors',
+        'sidebar.typography': 'Typography',
+        'sidebar.components': 'Components',
+        'sidebar.nav': 'Nav',
+        'sidebar.editor': 'Editor',
+        'sidebar.card': 'Card',
+        'sidebar.tag': 'Tag',
+        'sidebar.btn': 'Button',
+        'sidebar.stat': 'Stat',
+        'sidebar.toast': 'Toast',
+        'sidebar.countup': 'Count Up',
+        'sidebar.inertia': 'Inertia Scroll',
+        'sidebar.form': 'Form',
+        'sidebar.dialog': 'Dialog',
+        'sidebar.theme': 'Theme',
+        'sidebar.motion-js': 'Motion & JS',
+        'sidebar.motion': 'Motion',
+        'sidebar.js-api': 'JS API',
+        'sidebar.auto-init': 'Auto-init',
+
+        'install.heading': 'Sayo UI',
+        'install.tagline': 'Zero dependency · CSS variable driven · Sayo interactions built-in · GitHub Primer colors',
+        'install.desc': 'Just two files:',
+
+        'tokens.heading': 'Design Tokens',
+        'tokens.desc': 'All visual properties exposed as <code>--syo-*</code> CSS variables. Override globally to reskin.',
+        'tokens.colors': 'Colors',
+        'tokens.typography': 'Typography',
+
+        'components.heading': 'Components',
+        'comp-nav.desc': 'Use .syo-nav for the top navigation bar',
+        'comp-editor.desc': 'Code editor window with titlebar, line numbers, and syntax highlighting',
+        'comp-card.desc': 'Hover to see the elastic lift effect — border changes color, card scales up slightly.',
+        'comp-tag.desc': 'Hover: border turns accent + bouncy scale. Click: shrink press.',
+        'comp-btn.desc': 'Elastic physics — spring in on hover, press down on click.',
+        'comp-stat.desc': 'Stat tile with monospace value and uppercase label.',
+        'comp-toast.desc': 'Sayo-style elastic slide-in from bottom-right. Click to trigger:',
+        'comp-countup.desc': 'Click button to trigger number animation, Sayo score-counting style.',
+        'comp-countup.trigger': 'Trigger Count',
+        'comp-countup.reset': 'Reset',
+        'comp-inertia.desc': 'Sayo song-select-style momentum scrolling. Drag sideways, release to see momentum carry.',
+        'comp-inertia.code-desc': 'One attribute enables inertia',
+        'comp-form.desc': 'Focus glow, floating label elastic animation, checkbox/radio spring-pop.',
+        'comp-form.username': 'Username',
+        'comp-form.username-hint': 'With leading icon — icon turns blue on focus.',
+        'comp-form.email': 'Email (floating label)',
+        'comp-form.email-hint': 'Click the input — the label springs up with elastic easing.',
+        'comp-form.role': 'Role',
+        'comp-form.remember': 'Remember me',
+        'comp-form.form-hint': 'Check & click the boxes — elastic spring-pop animation on toggle.',
+        'comp-dialog.desc': 'Sayo-style elastic modal. Click to try:',
+        'comp-dialog.custom': 'Custom Dialog',
+        'comp-dialog.confirm': 'Confirm',
+        'comp-dialog.alert': 'Alert',
+
+        'theme.heading': 'Light / Dark Theme',
+        'theme.desc': 'Sayo UI defaults to dark. Add <code>data-syo-theme="light"</code> to <code>&lt;html&gt;</code> for the GitHub Primer Light palette.',
+        'theme.runtime': 'The theme toggle button in the nav bar switches themes live. All <code>--syo-*</code> tokens update instantly — backgrounds, text, borders, functional colors, and syntax highlighting all adapt.',
+
+        'motion.heading': 'Motion & Sayo Interactions',
+        'motion.desc': 'All interactions are active on this page — try them now.',
+        'motion.cursor-title': 'Custom Cursor',
+        'motion.cursor-desc': 'Global ring cursor replaces system pointer. Press to expand (CursorExpand). Glow follows everywhere.',
+        'motion.trail-title': 'Smooth Trail',
+        'motion.trail-desc': '25-point polyline comet tail following the cursor. Fades from bright/thick to transparent.',
+        'motion.flash-title': 'Click Flash',
+        'motion.flash-desc': 'Radial pulse at click position — instant feedback for every interaction.',
+        'motion.spring-title': 'Elastic Physics',
+        'motion.spring-desc': 'All cards, tags, buttons, links use spring easing for hover/press. It just <em>feels</em> right.',
+        'motion.troubleshoot-title': 'Troubleshooting: glow/trail not showing?',
+        'motion.troubleshoot-desc': 'If you can\'t see the glow and trail, the most likely cause is your system has <strong>"Reduce motion"</strong> enabled. Sayo UI respects <code>prefers-reduced-motion: reduce</code> and silently skips decorative effects (keeping only the base cursor ring for usability).',
+
+        'js-api.heading': 'JavaScript API',
+        'js-api.desc': 'All modules exposed under <code>window.Sayo</code>. Use the API for fine-grained control.',
+
+        'auto-init.heading': 'Attribute Auto-init',
+        'auto-init.desc': 'Add <code>data-syo-*</code> attributes to <code>&lt;body&gt;</code> or any container. No JS required.',
+
+        /* Sidebar extras */
+        'sidebar.toggle': 'Theme Toggle',
+        'sidebar.resources': 'Resources',
+
+        /* Toggle section */
+        'comp-toggle.desc': 'Generic pill toggle switch. Clean and restrained by default. Theme variant with sun/moon sky animation. Pure CSS, checkbox-driven.',
+        'comp-toggle.labels': 'Default · Checked · Small · Disabled',
+        'comp-toggle.theme-desc': 'Theme variant <code>.syo-toggle-theme</code> — sun & moon switch, sky gradient, twinkling stars:',
+        'comp-toggle.try-it': '← Try it',
+
+        /* Scroll spy */
+        'scrollspy.heading': 'Scroll Spy',
+        'scrollspy.desc': 'Auto-highlights the current section link in the sidebar when scrolling. One attribute to enable.',
+        'scrollspy.demo-desc': 'The left sidebar on this page is a live demo of Scroll Spy — scroll down and watch the current section link highlight in purple.',
+        'scrollspy.attr-usage': 'Attribute Usage',
+        'scrollspy.js-api': 'JS API',
+        'scrollspy.how-it-works': 'How It Works',
+        'scrollspy.how-it-works-desc': 'The module finds all <code>&lt;a href="#..."&gt;</code> links in the container, locates their target elements, checks which section is currently in view on <code>scroll</code>, and adds the <code>active</code> class to the corresponding link. Combined with CSS <code>.active</code> styles, it produces the purple left-border + highlight effect.',
+
+        /* Troubleshoot */
+        'motion.troubleshoot-more': 'For detailed steps, see',
+
+        /* Code comments */
+        'syn.nav-desc': '&lt;!-- Use .syo-nav for the top bar --&gt;',
+        'syn.anywhere': '// Anywhere in your code',
+        'syn.auto-trigger': '&lt;!-- Auto-trigger on scroll into view --&gt;',
+        'syn.manual-trigger': '// Manual trigger',
+        'syn.inertia-desc': '&lt;!-- One attribute enables inertia --&gt;',
+        'syn.floating-label': '&lt;!-- Floating label (elastic spring-up) --&gt;',
+        'syn.input-icon': '&lt;!-- Input with leading icon --&gt;',
+        'syn.checkbox-radio': '&lt;!-- Checkbox / Radio — spring-pop animation on check --&gt;',
+        'syn.custom-dialog': '// Custom dialog',
+        'syn.confirm-dialog': '// Confirm — returns Promise&lt;boolean&gt;',
+        'syn.alert-dialog': '// Alert — returns Promise&lt;void&gt;',
+        'syn.base-toggle': '&lt;!-- Base toggle — clean, any binary switch --&gt;',
+        'syn.small-variant': '&lt;!-- Small variant --&gt;',
+        'syn.theme-variant': '&lt;!-- Theme variant — day/night with sun, moon, stars --&gt;',
+        'syn.light-theme': '&lt;!-- Light theme — add to &lt;html&gt; --&gt;',
+        'syn.toggle-runtime': '// Toggle at runtime',
+        'syn.back-to-dark': '// back to dark',
+        'syn.init-settings': '// Init with custom settings',
+        'syn.accent-hex': '// #58a6ff',
+        'syn.cleanup': '// Clean up',
+        'syn.global-trail': '// Global trail',
+        'syn.scoped-trail': '// Scoped to a container',
+        'syn.global-flash': '// Global flash, ripple inside [data-syo-ripple] containers',
+        'syn.parallax-desc': '// Make an element shift with mouse',
+        'syn.auto-init': '// Auto-inits on DOMContentLoaded',
+        'syn.reveal-desc': '// Add .syo-reveal class to elements you want animated',
+        'syn.scrollspy-attr': '&lt;!-- value = scroll offset (px), usually = nav height --&gt;',
+        'syn.scrollspy-init': '// Manual init',
+        'syn.scrollspy-nav': '// Container with links',
+        'syn.scrollspy-offset': '// Scroll offset, subtract nav height',
+        'syn.scrollspy-class': '// CSS class for active link',
+        'syn.scrollspy-destroy': '// Destroy',
+        'syn.page-demo': '&lt;!-- The page you\'re looking at right now --&gt;',
+        'syn.troubleshoot-diag': '// Quick browser diagnostics',
+        'syn.troubleshoot-motion': '// true = motion skipped',
+        'syn.troubleshoot-cursor': '// true = cursor OK',
+        'syn.troubleshoot-glow': '// true = glow OK',
+        'syn.troubleshoot-devtools': '// Chrome DevTools → Rendering → uncheck "Emulate CSS prefers-reduced-motion"',
+
+        'footer.tagline': 'Sayo UI — GitHub Primer Dark + Sayo',
+        'footer.stats': '2 files · 0 dependencies · ~15 KB gzipped',
+
+        'lang.switch': '中',
+        'lang.title': 'Switch to Chinese',
+      }
+    };
+
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem(LANG_KEY, lang);
+
+      // Update all [data-i18n] elements
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        if (t[lang] && t[lang][key]) {
+          el.innerHTML = t[lang][key];
+        }
+      });
+
+      // Update [data-i18n-attr]
+      document.querySelectorAll('[data-i18n-attr]').forEach(function(el) {
+        var mapping = el.getAttribute('data-i18n-attr').split(',');
+        mapping.forEach(function(pair) {
+          var parts = pair.trim().split(':');
+          var attr = parts[0].trim();
+          var key = parts[1].trim();
+          if (t[lang] && t[lang][key]) {
+            el.setAttribute(attr, t[lang][key]);
+          }
+        });
+      });
+
+      // Sync lang checkbox (checked = EN, unchecked = ZH)
+      var langCheckbox = document.getElementById('lang-checkbox');
+      if (langCheckbox) langCheckbox.checked = (lang === 'en');
+
+      // Update html lang attr
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    }
+
+    // Lang toggle — checkbox driven
+    document.getElementById('lang-checkbox').addEventListener('change', function() {
+      setLang(this.checked ? 'en' : 'zh');
+    });
+
+    // Init
+    setLang(currentLang);
+  })();
+</script>
+<script>
+  /* ═══════════════════════════════════════════════════════════════
+     Minimal syntax highlighter for code blocks
+     Supports: html, js, rust (auto-detected)
+     ═══════════════════════════════════════════════════════════════ */
+  (function() {
+    var KEYWORDS_JS = /\b(const|let|var|function|return|if|else|for|while|of|in|await|async|class|new|this|typeof|true|false|null|undefined|import|export|from|default|switch|case|break|continue|try|catch|throw|finally|yield|do|static|get|set|extends|super)\b/g;
+    var KEYWORDS_RS = /\b(fn|let|mut|pub|use|mod|struct|enum|impl|trait|type|where|self|super|crate|match|if|else|for|while|loop|in|return|break|continue|true|false|as|move|ref|static|dyn|unsafe|async|await|const)\b/g;
+
+    function detectLang(text) {
+      if (/<\/?[a-z]+[>\s]/.test(text) && text.indexOf('<') >= 0) return 'html';
+      if (/\bfn\b.*\{/.test(text) || /\blet\s+mut\b/.test(text) || /::/.test(text)) return 'rs';
+      return 'js';
+    }
+
+    function highlight(code, lang) {
+      var text = code.innerHTML;
+      var saved = [];
+      var tokens = [];
+
+      // 1. Preserve existing i18n spans as placeholders
+      text = text.replace(/<span\s+class="syn"[^>]*data-i18n="[^"]*"[^>]*>[\s\S]*?<\/span>/g, function(m) {
+        saved.push(m);
+        return '\x00S' + (saved.length - 1) + '\x00';
+      });
+
+      // 2. Mark tokens with placeholders (prevents cascade pollution)
+      //    Use \x00K prefix so numeric IDs don't get matched by the number regex
+      function tok(cls, match) {
+        var id = tokens.length;
+        tokens.push('<span class="' + cls + '">' + match + '</span>');
+        return '\x00K' + id + '\x00';
+      }
+
+      if (lang === 'html') {
+        text = text.replace(/(&lt;!--[\s\S]*?--&gt;)/g, function(_, m) { return tok('syn', m); });
+        text = text.replace(/(&lt;\/?)([\w-]+)/g, function(_, prefix, name) { return prefix + tok('syn-type', name); });
+        text = text.replace(/(\s)([\w-]+)(=")/g, function(_, sp, name, eq) { return sp + tok('syn-func', name) + eq; });
+        text = text.replace(/(=")([^"]*)(")/g, function(_, pre, val, post) { return pre + tok('syn-string', val) + post; });
+      } else {
+        var kom = lang === 'rs' ? KEYWORDS_RS : KEYWORDS_JS;
+        text = text.replace(/(\/\/[^\n]*)/g, function(_, m) { return tok('syn', m); });
+        text = text.replace(/(&lt;!--[\s\S]*?--&gt;)/g, function(_, m) { return tok('syn', m); });
+        text = text.replace(/(&lt;\/?)([\w-]+)/g, function(_, prefix, name) { return prefix + tok('syn-type', name); });
+        text = text.replace(/('(?:[^'\\]|\\.)*')/g, function(_, m) { return tok('syn-string', m); });
+        text = text.replace(/("(?:[^"\\]|\\.)*")/g, function(_, m) { return tok('syn-string', m); });
+        text = text.replace(/(`(?:[^`\\]|\\.)*`)/g, function(_, m) { return tok('syn-string', m); });
+        text = text.replace(kom, function(m) { return tok('syn-keyword', m); });
+        text = text.replace(/\b(\d+\.?\d*)\b/g, function(_, m) { return tok('syn-number', m); });
+        if (lang === 'rs') {
+          text = text.replace(/(\w+)!/g, function(_, m) { return tok('syn-macro', m + '!'); });
+        }
+        text = text.replace(/\b(\w+)(\()/g, function(m, name, paren) {
+          if (/^(if|for|while|switch|catch|return|typeof|await|match)$/.test(name)) return m;
+          return tok('syn-func', name) + paren;
+        });
+      }
+
+      // 3. Resolve tokens
+      for (var i = 0; i < tokens.length; i++) {
+        text = text.split('\x00K' + i + '\x00').join(tokens[i]);
+      }
+      // 4. Restore i18n spans
+      for (var j = 0; j < saved.length; j++) {
+        text = text.split('\x00S' + j + '\x00').join(saved[j]);
+      }
+
+      code.innerHTML = text;
+    }
+
+    function highlightAll() {
+      var blocks = document.querySelectorAll('.code-block');
+      for (var i = 0; i < blocks.length; i++) {
+        var b = blocks[i];
+        var lang = detectLang(b.textContent);
+        highlight(b, lang);
+      }
+    }
+
+    window.highlightAll = highlightAll;
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', highlightAll);
+    } else {
+      highlightAll();
+    }
+  })();
+</script>
+<script>
+  // Theme toggle — checkbox-driven pill, persisted
+  (function() {
+    var checkbox = document.getElementById('theme-checkbox');
+    var KEY = 'sayo-theme';
+
+    // Restore saved preference
+    if (localStorage.getItem(KEY) === 'light') {
+      checkbox.checked = true;
+      document.documentElement.setAttribute('data-syo-theme', 'light');
+    }
+
+    checkbox.addEventListener('change', function() {
+      if (checkbox.checked) {
+        document.documentElement.setAttribute('data-syo-theme', 'light');
+        localStorage.setItem(KEY, 'light');
+      } else {
+        document.documentElement.removeAttribute('data-syo-theme');
+        localStorage.removeItem(KEY);
+      }
+    });
+  })();
+</script>
+<script>
+  // Logo reveal — auto-play on load, click to replay
+  (function() {
+    var hero = document.getElementById('hero-logo');
+    if (!hero) return;
+
+    var heroSvg = hero.querySelector('.sayo-logo-svg');
+    var heroText = hero.querySelector('.hero-text');
+    var textTimer;
+
+    function replay(svg, text) {
+      clearTimeout(textTimer);
+      // Remove → flush → re-add: double rAF ensures browser
+      // renders the removal before re-adding, restarting the animation
+      svg.classList.remove('animate');
+      if (text) text.classList.remove('show');
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          svg.classList.add('animate');
+          if (text) {
+            textTimer = setTimeout(function() { text.classList.add('show'); }, 800);
+          }
+        });
+      });
+    }
+
+    // Auto-play on load
+    setTimeout(function() {
+      replay(heroSvg, heroText);
+    }, 100);
+
+    // Click to replay
+    hero.addEventListener('click', function() {
+      replay(heroSvg, heroText);
+    });
+  })();
+</script>
+<script>
+  // Sidebar collapse + mobile off-canvas
+  (function() {
+    var KEY = 'sayo-sidebar-collapsed';
+    var btn = document.getElementById('sidebar-toggle');
+    var hamburger = document.getElementById('nav-hamburger');
+    var sidebar = document.querySelector('.doc-sidebar');
+    var backdrop = document.getElementById('sidebar-backdrop');
+    if (!sidebar) return;
+
+    function isMobile() { return window.innerWidth <= 768; }
+
+    function openMobile() {
+      sidebar.classList.add('mobile-open');
+      if (backdrop) backdrop.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobile() {
+      sidebar.classList.remove('mobile-open');
+      if (backdrop) backdrop.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    // Desktop: restore collapsed state
+    if (!isMobile() && localStorage.getItem(KEY) === '1') {
+      sidebar.classList.add('collapsed');
+    }
+
+    // Desktop collapse toggle
+    if (btn) {
+      btn.addEventListener('click', function() {
+        if (isMobile()) {
+          sidebar.classList.contains('mobile-open') ? closeMobile() : openMobile();
+        } else {
+          var collapsed = sidebar.classList.toggle('collapsed');
+          localStorage.setItem(KEY, collapsed ? '1' : '0');
+        }
+      });
+    }
+
+    // Mobile hamburger
+    if (hamburger) {
+      hamburger.addEventListener('click', function() {
+        sidebar.classList.contains('mobile-open') ? closeMobile() : openMobile();
+      });
+    }
+
+    // Backdrop click → close
+    if (backdrop) {
+      backdrop.addEventListener('click', closeMobile);
+    }
+
+    // Close mobile sidebar on window resize to desktop
+    window.addEventListener('resize', function() {
+      if (!isMobile() && sidebar.classList.contains('mobile-open')) {
+        closeMobile();
+      }
+    });
+
+    // Close mobile sidebar on nav link click
+    sidebar.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        if (isMobile()) closeMobile();
+      });
+    });
+  })();
+</script>
+<!-- Everything on this page is driven by [data-syo-cursor] [data-syo-trail] on <body>.
+     Scroll spy auto-inits via [data-syo-scrollspy] on .doc-sidebar -->
+
+</body>
+</html>
