@@ -8,7 +8,7 @@
 | `sayo.js` | JS 交互引擎 — 11 个模块，全部挂在 `window.Sayo` |
 | `sayo.d.ts` | TypeScript 类型定义 |
 | `index.html` | 文档 + 实时演示页（同时也是 i18n 和语法高亮的宿主） |
-| `icons/` | 20 个单线 SVG 图标 |
+| `icons/` | 32 个单线 SVG 图标（25 个 UI + 6 个 logo 变体 + favicon） |
 
 ## 零构建
 
@@ -27,10 +27,11 @@
 3. **i18n 的 HTML 注释** — 代码注释翻译（`syn.*` 键）里 `<!--` 和 `-->` 必须写成 `&lt;!--` 和 `--&gt;`，否则 innerHTML 会当真实注释吞掉
 4. **resize 导致侧边栏状态** — 移动端 off-canvas 模式（≤768px）和桌面端 collapse 是两套逻辑，resize 跨越断点时要手动 closeMobile()
 5. **`prefers-reduced-motion`** — 光晕/拖尾/波纹/视差在 reduced motion 下静默跳过，但光标圆环（`data-syo-cursor`）始终创建。用户报"拖尾不显示"第一件事查这个
+6. **Cursor 抑制是精确选择器，不是全局 `*`** — `cursor: none` 只作用于已知交互元素（`a,button,input,.syo-btn,.syo-tab` 等），与 `sayo.js` 中的 `INTERACTIVE` 列表保持一致。第三方插件/弹窗注入的元素不受影响，可以正常显示自己的光标
 
 ## 修改后验证
 
 无测试套件。改动后直接：
 1. `node -e "new Function(require('fs').readFileSync('sayo.js','utf8'))"` — JS 语法检查
 2. 肉眼检查 CSS 括号：`grep -c '{' sayo.css` == `grep -c '}' sayo.css`
-3. 在浏览器打开 `index.html`，肉眼确认主题切换、语言切换、光标、拖尾都正常
+3. 在浏览器打开 `index.html`，肉眼确认主题切换、语言切换、光标、拖尾、tooltip 光效、tabs 切换、dropdown 展开/关闭都正常
