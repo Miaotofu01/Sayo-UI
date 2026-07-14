@@ -325,8 +325,26 @@ interface SayoScrollSpy {
 
 /* ──────────────────────────────────────────────────────────────── */
 
+interface SayoDropdownInstance {
+  el: HTMLElement;
+  close(): void;
+  open(e: Event): void;
+}
+
+interface SayoDropdown {
+  /**
+   * Initialise a dropdown menu on a container.
+   *
+   * Triggered automatically by `[data-syo-dropdown]`.
+   */
+  init(el: string | HTMLElement): SayoDropdownInstance | undefined;
+}
+
+/* ──────────────────────────────────────────────────────────────── */
+
 interface Sayo {
   dialog: SayoDialog;
+  dropdown: SayoDropdown;
   scrollSpy: SayoScrollSpy;
   cursor: SayoCursor;
   trail: SayoTrail;

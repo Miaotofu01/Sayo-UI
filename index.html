@@ -429,6 +429,10 @@
   <a href="#comp-form" data-i18n="sidebar.form">表单</a>
   <a href="#comp-dialog" data-i18n="sidebar.dialog">对话框</a>
   <a href="#comp-toggle" data-i18n="sidebar.toggle">Theme Toggle</a>
+  <a href="#comp-skeleton">Skeleton</a>
+  <a href="#comp-tooltip">Tooltip</a>
+  <a href="#comp-tabs">Tabs</a>
+  <a href="#comp-dropdown">Dropdown</a>
 
   <p class="doc-sidebar-title">
     <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 2a8 8 0 010 16V2z" fill="currentColor" opacity="0.3"/></svg>
@@ -897,6 +901,113 @@ await Sayo.dialog.alert({ title: 'Done', message: 'File saved.' });</div>
   &lt;/span&gt;
 &lt;/label&gt;</div>
   </div>
+</div>
+
+<!-- ── SKELETON ── -->
+<h3 id="comp-skeleton" class="syo-mt-6">Skeleton</h3>
+<div class="demo-box">
+  <p class="syo-text-sm syo-text-muted syo-mb-4">加载占位骨架，微光动画。纯 CSS，一个 class 搞定：</p>
+  <div class="demo-row syo-mb-4" style="gap:var(--syo-space-6)">
+    <div style="flex:1">
+      <div class="syo-skeleton syo-skeleton--circle" style="width:48px;height:48px;margin-bottom:8px"></div>
+      <div class="syo-skeleton syo-skeleton--text" style="width:60%;margin-bottom:6px"></div>
+      <div class="syo-skeleton syo-skeleton--text" style="width:80%;margin-bottom:6px"></div>
+      <div class="syo-skeleton syo-skeleton--text" style="width:40%"></div>
+    </div>
+    <div style="flex:1">
+      <div class="syo-skeleton syo-skeleton--btn" style="width:120px;margin-bottom:8px"></div>
+      <div class="syo-skeleton" style="height:80px;margin-bottom:8px"></div>
+    </div>
+  </div>
+  <div class="code-block syo-mt-3">
+<span class="syn">&lt;!-- Circle avatar skeleton --&gt;</span>
+&lt;div class="syo-skeleton syo-skeleton--circle" style="width:48px;height:48px"&gt;&lt;/div&gt;
+
+<span class="syn">&lt;!-- Text line skeletons --&gt;</span>
+&lt;div class="syo-skeleton syo-skeleton--text" style="width:60%"&gt;&lt;/div&gt;
+
+<span class="syn">&lt;!-- Button skeleton --&gt;</span>
+&lt;div class="syo-skeleton syo-skeleton--btn" style="width:120px"&gt;&lt;/div&gt;</div>
+</div>
+
+<!-- ── TOOLTIP ── -->
+<h3 id="comp-tooltip" class="syo-mt-6">Tooltip</h3>
+<div class="demo-box">
+  <p class="syo-text-sm syo-text-muted syo-mb-4">hover 弹性弹出。纯 CSS，<code>data-syo-tooltip</code> 属性驱动，零 JS：</p>
+  <div class="demo-row" style="gap:var(--syo-space-4);align-items:center">
+    <span class="syo-tooltip syo-btn syo-btn--sm" data-syo-tooltip="保存到本地">上</span>
+    <span class="syo-tooltip syo-tooltip--bottom syo-btn syo-btn--sm" data-syo-tooltip="从云端下载">下</span>
+    <span class="syo-tooltip syo-tooltip--left syo-btn syo-btn--sm" data-syo-tooltip="返回上一页">左</span>
+    <span class="syo-tooltip syo-tooltip--right syo-btn syo-btn--sm" data-syo-tooltip="跳转到下一页">右</span>
+  </div>
+  <div class="code-block syo-mt-3">
+<span class="syn">&lt;!-- Default: hover shows above --&gt;</span>
+&lt;span class="syo-tooltip" <strong>data-syo-tooltip</strong>="提示文字"&gt;Hover me&lt;/span&gt;
+
+<span class="syn">&lt;!-- Position variants: --bottom, --left, --right --&gt;</span>
+&lt;span class="syo-tooltip syo-tooltip--bottom" data-syo-tooltip="下方"&gt;Bottom&lt;/span&gt;</div>
+</div>
+
+<!-- ── TABS ── -->
+<h3 id="comp-tabs" class="syo-mt-6">Tabs</h3>
+<div class="demo-box">
+  <p class="syo-text-sm syo-text-muted syo-mb-4">CSS 驱动标签页切换，隐藏 radio + <code>:checked</code> + <code>:has()</code>，零 JS：</p>
+  <div class="syo-tabs">
+    <input type="radio" name="demo-tabs" id="tab-1" checked>
+    <label class="syo-tab" for="tab-1">代码</label>
+    <input type="radio" name="demo-tabs" id="tab-2">
+    <label class="syo-tab" for="tab-2">设计</label>
+    <input type="radio" name="demo-tabs" id="tab-3">
+    <label class="syo-tab" for="tab-3">部署</label>
+  </div>
+  <div class="syo-tabs-panels">
+    <div class="syo-tab-panel"><p class="syo-text-sm">const hello = "world"; // 纯 CSS 驱动的 tab 切换</p></div>
+    <div class="syo-tab-panel"><p class="syo-text-sm">Figma → Code → 弹性动效 → 发布。保持一致的视觉语言。</p></div>
+    <div class="syo-tab-panel"><p class="syo-text-sm">两个文件，零依赖。扔到服务器上就能跑。</p></div>
+  </div>
+  <div class="code-block syo-mt-3">
+<span class="syn">&lt;!-- Tabs: hidden radios + labels --&gt;</span>
+&lt;div class="syo-tabs"&gt;
+  &lt;input type="radio" name="tabs" id="t1" <strong>checked</strong>&gt;
+  &lt;label class="syo-tab" for="t1"&gt;Tab 1&lt;/label&gt;
+  &lt;input type="radio" name="tabs" id="t2"&gt;
+  &lt;label class="syo-tab" for="t2"&gt;Tab 2&lt;/label&gt;
+&lt;/div&gt;
+&lt;div class="syo-tabs-panels"&gt;
+  &lt;div class="syo-tab-panel"&gt;Panel 1 content&lt;/div&gt;
+  &lt;div class="syo-tab-panel"&gt;Panel 2 content&lt;/div&gt;
+&lt;/div&gt;</div>
+</div>
+
+<!-- ── DROPDOWN ── -->
+<h3 id="comp-dropdown" class="syo-mt-6">Dropdown Menu</h3>
+<div class="demo-box">
+  <p class="syo-text-sm syo-text-muted syo-mb-4">点击展开弹性菜单，点外部或按 Escape 关闭。支持属性自动初始化：</p>
+  <div class="demo-row" style="gap:var(--syo-space-4);align-items:flex-start">
+    <div class="syo-dropdown" data-syo-dropdown>
+      <button class="syo-btn syo-btn--sm syo-dropdown-toggle">
+        文件
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="syo-dropdown-menu">
+        <button class="syo-dropdown-item">新建项目</button>
+        <button class="syo-dropdown-item">打开文件…</button>
+        <div class="syo-dropdown-divider"></div>
+        <button class="syo-dropdown-item">保存</button>
+        <button class="syo-dropdown-item" style="color:var(--syo-red)">删除</button>
+      </div>
+    </div>
+  </div>
+  <div class="code-block syo-mt-3">
+<span class="syn">&lt;!-- One attribute to enable --&gt;</span>
+&lt;div class="syo-dropdown" <strong>data-syo-dropdown</strong>&gt;
+  &lt;button class="syo-btn syo-dropdown-toggle"&gt;菜单&lt;/button&gt;
+  &lt;div class="syo-dropdown-menu"&gt;
+    &lt;button class="syo-dropdown-item"&gt;选项一&lt;/button&gt;
+    &lt;div class="syo-dropdown-divider"&gt;&lt;/div&gt;
+    &lt;button class="syo-dropdown-item"&gt;选项二&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</div>
 </div>
 
 <!-- ── LIGHT THEME ── -->

@@ -753,6 +753,75 @@
   })();
 
   /* ═══════════════════════════════════════════════════════════════
+     DROPDOWN MODULE — click-to-open menu
+     Trigger: [data-syo-dropdown] on container
+     ═══════════════════════════════════════════════════════════════ */
+  Sayo.dropdown = (function() {
+    var openInstance = null;
+
+    function closeCurrent() {
+      if (openInstance) { openInstance.close(); openInstance = null; }
+    }
+
+    function init(el) {
+      var target = typeof el === 'string' ? $(el) : el;
+      if (!target) return;
+
+      var toggle = target.querySelector('.syo-dropdown-toggle') || target;
+      var menu = target.querySelector('.syo-dropdown-menu');
+      if (!menu) return;
+
+      function open(e) {
+        e.stopPropagation();
+        if (openInstance && openInstance !== instance) closeCurrent();
+        target.classList.toggle('open');
+        if (target.classList.contains('open')) {
+          openInstance = instance;
+        } else {
+          openInstance = null;
+        }
+      }
+
+      function close() {
+        target.classList.remove('open');
+        if (openInstance === instance) openInstance = null;
+      }
+
+      function onKey(e) {
+        if (e.key === 'Escape') close();
+      }
+
+      on(toggle, 'click', open);
+      on(target, 'keydown', onKey);
+
+      var instance = { el: target, close: close, open: open };
+      return instance;
+    }
+
+    // Global: close dropdown when clicking outside
+    on(document, 'click', function(e) {
+      if (openInstance && !openInstance.el.contains(e.target)) {
+        openInstance.close();
+      }
+    });
+
+    // Auto-init
+    function scan() {
+      $$('[data-syo-dropdown]').forEach(function(el) {
+        if (!el._syoDropdown) el._syoDropdown = init(el);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      on(document, 'DOMContentLoaded', scan);
+    } else {
+      scan();
+    }
+
+    return { init: init };
+  })();
+
+  /* ═══════════════════════════════════════════════════════════════
      DIALOG MODULE — Sayo-style elastic modal
      Call: Sayo.dialog.show({ title, body }) | Sayo.dialog.confirm({ ... })
      ═══════════════════════════════════════════════════════════════ */
