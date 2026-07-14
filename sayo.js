@@ -110,9 +110,23 @@
       var overInteractive = !pressing && isInteractive(cx, cy);
       if (overInteractive && !hovering) {
         hovering = true;
+        // Quick bounce: 16 → 18 → 16
+        el.style.transition = 'width 80ms cubic-bezier(0.34,1.56,0.64,1), height 80ms cubic-bezier(0.34,1.56,0.64,1)';
+        el.style.width = '18px';
+        el.style.height = '18px';
+        (function() {
+          var settled = false;
+          function settle() {
+            if (settled) return;
+            settled = true;
+            el.style.transition = 'width 120ms cubic-bezier(0.34,1.56,0.64,1), height 120ms cubic-bezier(0.34,1.56,0.64,1)';
+            el.style.width = cfg.size + 'px';
+            el.style.height = cfg.size + 'px';
+            setTimeout(function() { el.style.transition = ''; }, 140);
+          }
+          setTimeout(settle, 70);
+        })();
         targetGlow = cfg.glowHover;
-        el.style.width = cfg.size + 'px';
-        el.style.height = cfg.size + 'px';
         el.style.borderWidth = '2px';
         el.style.borderColor = 'rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.9)';
         el.style.background = 'rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.15)';
@@ -141,6 +155,7 @@
 
     function onDown() {
       pressing = true;
+      el.style.transition = ''; // instant, no bounce
       targetGlow = cfg.glowPress;
       el.style.width = cfg.pressSize + 'px';
       el.style.height = cfg.pressSize + 'px';
@@ -153,6 +168,7 @@
 
     function onUp() {
       pressing = false;
+      el.style.transition = '';
       if (isInteractive(cx, cy)) {
         hovering = true;
         targetGlow = cfg.glowHover;
