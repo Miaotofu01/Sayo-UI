@@ -38,14 +38,13 @@
     // Configurable defaults
     var DEFAULTS = {
       size: 16,
-      hoverSize: 22,
-      pressSize: 24,
+      pressSize: 26,
       glowNormal: 40,
-      glowHover: 55,
+      glowHover: 50,
       glowPress: 70,
       glowIntensity: 0.08,
-      glowIntensityHover: 0.12,
-      glowIntensityPress: 0.16,
+      glowIntensityHover: 0.14,
+      glowIntensityPress: 0.18,
       accentR: 88, accentG: 166, accentB: 255,   // #58a6ff
       trailR: 121, trailG: 192, trailB: 255,     // #79c0ff
     };
@@ -112,19 +111,21 @@
       if (overInteractive && !hovering) {
         hovering = true;
         targetGlow = cfg.glowHover;
-        el.style.width = cfg.hoverSize + 'px';
-        el.style.height = cfg.hoverSize + 'px';
+        el.style.width = cfg.size + 'px';
+        el.style.height = cfg.size + 'px';
         el.style.borderWidth = '2px';
-        el.style.background = 'rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.18)';
+        el.style.borderColor = 'rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.9)';
+        el.style.background = 'rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.15)';
         el.style.boxShadow =
-          '0 0 14px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.35),' +
-          '0 0 4px rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.15)';
+          '0 0 16px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.3),' +
+          '0 0 6px rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.2)';
       } else if (!overInteractive && hovering && !pressing) {
         hovering = false;
         targetGlow = cfg.glowNormal;
         el.style.width = cfg.size + 'px';
         el.style.height = cfg.size + 'px';
         el.style.borderWidth = '1.5px';
+        el.style.borderColor = '#c9d1d9';
         el.style.background = 'rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.1)';
         el.style.boxShadow =
           '0 0 8px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.2),' +
@@ -155,13 +156,14 @@
       if (isInteractive(cx, cy)) {
         hovering = true;
         targetGlow = cfg.glowHover;
-        el.style.width = cfg.hoverSize + 'px';
-        el.style.height = cfg.hoverSize + 'px';
+        el.style.width = cfg.size + 'px';
+        el.style.height = cfg.size + 'px';
         el.style.borderWidth = '2px';
-        el.style.background = 'rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.18)';
+        el.style.borderColor = 'rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.9)';
+        el.style.background = 'rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.15)';
         el.style.boxShadow =
-          '0 0 14px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.35),' +
-          '0 0 4px rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.15)';
+          '0 0 16px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.3),' +
+          '0 0 6px rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.2)';
       } else {
         hovering = false;
         targetGlow = cfg.glowNormal;
