@@ -6,14 +6,20 @@
 interface SayoCursorOptions {
   /** Cursor ring diameter in px (default: 16) */
   size?: number;
+  /** Ring diameter when hovering interactive elements (default: 22) */
+  hoverSize?: number;
   /** Pressed diameter (default: 24) */
   pressSize?: number;
   /** Glow radius normal (default: 40) */
   glowNormal?: number;
+  /** Glow radius when hovering interactive elements (default: 55) */
+  glowHover?: number;
   /** Glow radius on press (default: 70) */
   glowPress?: number;
   /** Glow opacity normal (default: 0.08) */
   glowIntensity?: number;
+  /** Glow opacity when hovering interactive elements (default: 0.12) */
+  glowIntensityHover?: number;
   /** Glow opacity on press (default: 0.16) */
   glowIntensityPress?: number;
   /** Accent color — red channel (default: 88, #58a6ff) */

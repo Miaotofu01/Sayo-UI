@@ -157,6 +157,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* custom cursor active — suppress all system cursors */
+body[data-syo-cursor],
+body[data-syo-cursor] * {
+  cursor: none !important;
+}
+
 /* ── SCROLLBAR ───────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

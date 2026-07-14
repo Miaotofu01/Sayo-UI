@@ -38,18 +38,27 @@
     // Configurable defaults
     var DEFAULTS = {
       size: 16,
-      inHeroSize: 20,
+      hoverSize: 22,
       pressSize: 24,
-      inHeroPressSize: 32,
       glowNormal: 40,
+      glowHover: 55,
       glowPress: 70,
       glowIntensity: 0.08,
+      glowIntensityHover: 0.12,
       glowIntensityPress: 0.16,
       accentR: 88, accentG: 166, accentB: 255,   // #58a6ff
       trailR: 121, trailG: 192, trailB: 255,     // #79c0ff
     };
 
     var cfg = {};
+
+    var INTERACTIVE = 'a,button,input,select,textarea,[role="button"],.syo-btn,.syo-tab,.syo-dropdown-item,.syo-dropdown-toggle,.syo-tooltip,.syo-toggle,label.syo-checkbox,label.syo-radio,[onclick]';
+
+    function isInteractive(x, y) {
+      var el = document.elementFromPoint(x, y);
+      if (!el || el === document.documentElement || el === document.body) return false;
+      return el.matches(INTERACTIVE) || el.closest(INTERACTIVE);
+    }
 
     function initCanvas() {
       canvas = document.createElement('canvas');
@@ -90,11 +99,38 @@
       el.style.height = size + 'px';
     }
 
+    var hovering = false;
+
     function onMove(e) {
       cx = e.clientX;
       cy = e.clientY;
       el.style.left = cx + 'px';
       el.style.top = cy + 'px';
+
+      // Detect interactive elements — expand ring instead of showing system cursor
+      var overInteractive = !pressing && isInteractive(cx, cy);
+      if (overInteractive && !hovering) {
+        hovering = true;
+        targetGlow = cfg.glowHover;
+        el.style.width = cfg.hoverSize + 'px';
+        el.style.height = cfg.hoverSize + 'px';
+        el.style.borderWidth = '2px';
+        el.style.background = 'rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.18)';
+        el.style.boxShadow =
+          '0 0 14px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.35),' +
+          '0 0 4px rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.15)';
+      } else if (!overInteractive && hovering && !pressing) {
+        hovering = false;
+        targetGlow = cfg.glowNormal;
+        el.style.width = cfg.size + 'px';
+        el.style.height = cfg.size + 'px';
+        el.style.borderWidth = '1.5px';
+        el.style.background = 'rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.1)';
+        el.style.boxShadow =
+          '0 0 8px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.2),' +
+          '0 0 3px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.1)';
+      }
+
       // Restart rAF if idle-timed out
       if (!running && !isReducedMotion) { running = true; raf(draw); }
       // Reset idle timer
@@ -116,14 +152,27 @@
 
     function onUp() {
       pressing = false;
-      targetGlow = cfg.glowNormal;
-      el.style.width = cfg.size + 'px';
-      el.style.height = cfg.size + 'px';
-      el.style.borderWidth = '1.5px';
-      el.style.background = 'rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.1)';
-      el.style.boxShadow =
-        '0 0 8px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.2),' +
-        '0 0 3px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.1)';
+      if (isInteractive(cx, cy)) {
+        hovering = true;
+        targetGlow = cfg.glowHover;
+        el.style.width = cfg.hoverSize + 'px';
+        el.style.height = cfg.hoverSize + 'px';
+        el.style.borderWidth = '2px';
+        el.style.background = 'rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.18)';
+        el.style.boxShadow =
+          '0 0 14px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.35),' +
+          '0 0 4px rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',0.15)';
+      } else {
+        hovering = false;
+        targetGlow = cfg.glowNormal;
+        el.style.width = cfg.size + 'px';
+        el.style.height = cfg.size + 'px';
+        el.style.borderWidth = '1.5px';
+        el.style.background = 'rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.1)';
+        el.style.boxShadow =
+          '0 0 8px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.2),' +
+          '0 0 3px rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',0.1)';
+      }
     }
 
     function draw() {
