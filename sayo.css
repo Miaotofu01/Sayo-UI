@@ -1478,17 +1478,14 @@ hr {
 
 .syo-tabs input:checked + .syo-tab {
   color: var(--syo-accent);
+  /* gradient bleeding up from the glowing line */
+  background: linear-gradient(to top, rgba(188,140,255,0.14) 0%, rgba(188,140,255,0.04) 60%, transparent 100%);
 }
 
 .syo-tabs input:checked + .syo-tab::after {
   width: calc(100% - var(--syo-space-3));
-  box-shadow: 0 0 10px rgba(188, 140, 255, 0.5),
-              0 0 4px rgba(188, 140, 255, 0.3);
-}
-
-/* Active tab subtle bg highlight */
-.syo-tabs input:checked + .syo-tab {
-  background: rgba(188, 140, 255, 0.06);
+  box-shadow: 0 0 12px rgba(188, 140, 255, 0.55),
+              0 0 4px rgba(188, 140, 255, 0.35);
 }
 
 .syo-tab-panel {
