@@ -110,10 +110,10 @@
       var overInteractive = !pressing && isInteractive(cx, cy);
       if (overInteractive && !hovering) {
         hovering = true;
-        // Quick bounce: 16 → 18 → 16
+        // Quick bounce: 16 → 22 → 16
         el.style.transition = 'width 80ms cubic-bezier(0.34,1.56,0.64,1), height 80ms cubic-bezier(0.34,1.56,0.64,1)';
-        el.style.width = '18px';
-        el.style.height = '18px';
+        el.style.width = '22px';
+        el.style.height = '22px';
         (function() {
           var settled = false;
           function settle() {
