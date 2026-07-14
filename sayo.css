@@ -793,7 +793,7 @@ hr {
    Generic pill toggle switch. Pure CSS, checkbox-driven.
    Variants:
      .syo-toggle             — base: clean pill, blue when checked
-     .syo-toggle-theme       — day/night: sky gradient, stars, sun↔moon
+     .syo-toggle--theme       — day/night: sky gradient, stars, sun↔moon
      .syo-toggle.syo-toggle--sm  — compact (36×20)
 */
 
@@ -884,7 +884,7 @@ hr {
    Extends base toggle with sky gradient track, stars,
    and sun/moon icons inside the knob.
    ═══════════════════════════════════════════════════════════════ */
-.syo-toggle-theme {
+.syo-toggle--theme {
   --st-width: 52px;
   --st-height: 28px;
   --st-knob: 22px;
@@ -893,18 +893,18 @@ hr {
 }
 
 /* Night sky (unchecked — dark theme) → Day sky (checked — light theme) */
-.syo-toggle-theme .syo-toggle-track {
+.syo-toggle--theme .syo-toggle-track {
   background: linear-gradient(135deg, #0d1b3e 0%, #1a237e 40%, #283593 100%);
   border: none;
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
   transition: background 500ms ease;
 }
-.syo-toggle-theme input:checked ~ .syo-toggle-track {
+.syo-toggle--theme input:checked ~ .syo-toggle-track {
   background: linear-gradient(135deg, #81d4fa 0%, #4fc3f7 50%, #ffcc80 100%);
 }
 
 /* Stars — visible at night (unchecked), fade out for day (checked) */
-.syo-toggle-theme .syo-toggle-track::after {
+.syo-toggle--theme .syo-toggle-track::after {
   content: '';
   position: absolute;
   inset: 3px 6px;
@@ -918,38 +918,38 @@ hr {
     radial-gradient(1.2px 1.2px at 35% 60%, #fff 50%, transparent 50%);
   background-repeat: no-repeat;
 }
-.syo-toggle-theme input:checked ~ .syo-toggle-track::after { opacity: 0; }
+.syo-toggle--theme input:checked ~ .syo-toggle-track::after { opacity: 0; }
 
 /* Theme knob — moon (unchecked) → sun (checked) */
-.syo-toggle-theme .syo-toggle-knob {
+.syo-toggle--theme .syo-toggle-knob {
   background: #e8eaf6;
   box-shadow: 0 1px 6px rgba(0,0,0,0.25), 0 0 14px rgba(121,192,255,0.2);
   transition: transform 400ms var(--syo-ease-elastic),
               background 300ms ease,
               box-shadow 300ms ease;
 }
-.syo-toggle-theme input:checked ~ .syo-toggle-knob {
+.syo-toggle--theme input:checked ~ .syo-toggle-knob {
   background: #fff8e1;
   box-shadow: 0 1px 4px rgba(0,0,0,0.18), 0 0 8px rgba(255,183,77,0.3);
 }
 
 /* Icons — moon visible by default, sun on checked */
-.syo-toggle-theme .syo-toggle-knob svg {
+.syo-toggle--theme .syo-toggle-knob svg {
   position: absolute;
   width: 13px; height: 13px;
   transition: opacity 250ms ease, transform 300ms var(--syo-ease-elastic);
 }
 .syo-toggle-sun  { opacity: 0; transform: rotate(90deg); }
 .syo-toggle-moon { opacity: 1; transform: rotate(0); }
-.syo-toggle-theme input:checked ~ .syo-toggle-knob .syo-toggle-sun {
+.syo-toggle--theme input:checked ~ .syo-toggle-knob .syo-toggle-sun {
   opacity: 1; transform: rotate(0);
 }
-.syo-toggle-theme input:checked ~ .syo-toggle-knob .syo-toggle-moon {
+.syo-toggle--theme input:checked ~ .syo-toggle-knob .syo-toggle-moon {
   opacity: 0; transform: rotate(-60deg);
 }
 
 /* ── VARIANT: Language (text labels inside knob) ── */
-.syo-toggle-lang {
+.syo-toggle--lang {
   --st-width: 48px;
   --st-height: 26px;
   --st-knob: 22px;
@@ -957,18 +957,18 @@ hr {
   --st-travel: 22px;
 }
 /* Track: purple → deep blue */
-.syo-toggle-lang .syo-toggle-track {
+.syo-toggle--lang .syo-toggle-track {
   background: linear-gradient(135deg, #2d1b69 0%, #4c249f 50%, #6d35d1 100%);
   border: none;
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
   transition: background 400ms ease, box-shadow 400ms ease;
 }
-.syo-toggle-lang input:checked ~ .syo-toggle-track {
+.syo-toggle--lang input:checked ~ .syo-toggle-track {
   background: linear-gradient(135deg, #0d1b3e 0%, #122a5c 50%, #1a3a7a 100%);
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.2), 0 0 10px rgba(88, 166, 255, 0.15);
 }
 /* Knob: light, works on both purple and blue */
-.syo-toggle-lang .syo-toggle-knob {
+.syo-toggle--lang .syo-toggle-knob {
   font-size: 0.625rem;
   font-weight: 700;
   color: #7c3aed;
@@ -979,13 +979,13 @@ hr {
               box-shadow 300ms var(--syo-ease-out),
               color 250ms ease, background 250ms ease;
 }
-.syo-toggle-lang input:checked ~ .syo-toggle-knob {
+.syo-toggle--lang input:checked ~ .syo-toggle-knob {
   color: #3b82f6;
   background: #eff6ff;
   box-shadow: 0 1px 4px rgba(0,0,0,0.15), 0 0 10px rgba(59, 130, 246, 0.25);
 }
-.syo-toggle-lang .syo-toggle-knob .syo-lang-zh,
-.syo-toggle-lang .syo-toggle-knob .syo-lang-en {
+.syo-toggle--lang .syo-toggle-knob .syo-lang-zh,
+.syo-toggle--lang .syo-toggle-knob .syo-lang-en {
   position: absolute;
   inset: 0;
   display: flex;
@@ -993,12 +993,12 @@ hr {
   justify-content: center;
   transition: opacity 200ms ease, transform 200ms var(--syo-ease-elastic);
 }
-.syo-toggle-lang .syo-lang-zh { opacity: 1; transform: scale(1); }
-.syo-toggle-lang .syo-lang-en { opacity: 0; transform: scale(0.6); }
-.syo-toggle-lang input:checked ~ .syo-toggle-knob .syo-lang-zh {
+.syo-toggle--lang .syo-lang-zh { opacity: 1; transform: scale(1); }
+.syo-toggle--lang .syo-lang-en { opacity: 0; transform: scale(0.6); }
+.syo-toggle--lang input:checked ~ .syo-toggle-knob .syo-lang-zh {
   opacity: 0; transform: scale(0.6);
 }
-.syo-toggle-lang input:checked ~ .syo-toggle-knob .syo-lang-en {
+.syo-toggle--lang input:checked ~ .syo-toggle-knob .syo-lang-en {
   opacity: 1; transform: scale(1);
 }
 

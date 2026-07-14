@@ -37,6 +37,20 @@ Custom icon set for the Sayo UI framework. All icons use `stroke="currentColor"`
 | `toast-error.svg` | 20×20 | Toast | X mark in circle. `--syo-red`. |
 | `toast-info.svg` | 20×20 | Toast | "i" in circle. `--syo-blue`. |
 | `toast-warning.svg` | 20×20 | Toast | Triangle with "!". `--syo-yellow`. |
+| `x-close.svg` | 20×20 | UI | X mark. Close buttons. |
+| `hamburger.svg` | 20×20 | UI | Three horizontal lines. Mobile menu. |
+| `chevron-right.svg` | 20×20 | UI | Right-pointing chevron. Next, expand. |
+| `chevron-left.svg` | 20×20 | UI | Left-pointing chevron. Back, collapse. |
+| `chevron-down.svg` | 20×20 | UI | Down-pointing chevron. Dropdown, show more. |
+| `chevron-up.svg` | 20×20 | UI | Up-pointing chevron. Collapse, show less. |
+| `search.svg` | 20×20 | UI | Magnifying glass. Search. |
+| `home.svg` | 20×20 | UI | House. Home page. |
+| `star.svg` | 20×20 | UI | Five-pointed star. Favourite, rate. |
+| `heart.svg` | 20×20 | UI | Heart shape. Like, love. |
+| `user.svg` | 20×20 | UI | Person silhouette. Profile, account. |
+| `pencil.svg` | 20×20 | UI | Pencil. Edit, compose. |
+| `check.svg` | 20×20 | UI | Simple checkmark. Confirm, done. |
+| `plus.svg` | 20×20 | UI | Plus sign. Add, create, new.
 
 ## Preview
 

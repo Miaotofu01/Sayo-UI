@@ -368,7 +368,7 @@
     <a href="#components" data-i18n="nav.components">组件</a>
     <a href="#motion" data-i18n="nav.motion">动效</a>
     <a href="#js" data-i18n="nav.js">API</a>
-    <label class="syo-toggle syo-toggle-lang" id="lang-toggle" title="Switch language">
+    <label class="syo-toggle syo-toggle--lang" id="lang-toggle" title="Switch language">
       <input type="checkbox" id="lang-checkbox">
       <span class="syo-toggle-track"></span>
       <span class="syo-toggle-knob">
@@ -376,7 +376,7 @@
         <span class="syo-lang-en">EN</span>
       </span>
     </label>
-    <label class="syo-toggle syo-toggle-theme" id="theme-toggle" title="Toggle theme" style="margin-left:var(--syo-space-2)">
+    <label class="syo-toggle syo-toggle--theme" id="theme-toggle" title="Toggle theme" style="margin-left:var(--syo-space-2)">
       <input type="checkbox" id="theme-checkbox">
       <span class="syo-toggle-track"></span>
       <span class="syo-toggle-knob">
@@ -863,9 +863,9 @@ await Sayo.dialog.alert({ title: 'Done', message: 'File saved.' });</div>
     <p class="syo-text-xs syo-text-muted syo-mb-4" data-i18n="comp-toggle.labels">默认 · 已选 · 小号 · 禁用</p>
 
     <!-- Theme variant -->
-    <p class="syo-text-sm syo-text-muted syo-mb-3" data-i18n="comp-toggle.theme-desc">主题变体 <code>.syo-toggle-theme</code> — 日月切换，天空渐变，星星点缀：</p>
+    <p class="syo-text-sm syo-text-muted syo-mb-3" data-i18n="comp-toggle.theme-desc">主题变体 <code>.syo-toggle--theme</code> — 日月切换，天空渐变，星星点缀：</p>
     <div class="demo-row syo-mb-4" style="align-items:center;gap:var(--syo-space-4)">
-      <label class="syo-toggle syo-toggle-theme">
+      <label class="syo-toggle syo-toggle--theme">
         <input type="checkbox">
         <span class="syo-toggle-track"></span>
         <span class="syo-toggle-knob">
@@ -888,7 +888,7 @@ await Sayo.dialog.alert({ title: 'Done', message: 'File saved.' });</div>
 &lt;label class="syo-toggle syo-toggle--sm"&gt;...&lt;/label&gt;
 
 <span class="syn" data-i18n="syn.theme-variant">&lt;!-- Theme variant — day/night with sun, moon, stars --&gt;</span>
-&lt;label class="syo-toggle syo-toggle-theme"&gt;
+&lt;label class="syo-toggle syo-toggle--theme"&gt;
   &lt;input type="checkbox"&gt;
   &lt;span class="syo-toggle-track"&gt;&lt;/span&gt;
   &lt;span class="syo-toggle-knob"&gt;
@@ -1210,7 +1210,7 @@ Sayo.scrollSpy.destroy();</div>
         /* Toggle section */
         'comp-toggle.desc': '通用 pill 滑块开关。基础版干净克制，主题版带日月天空动画。纯 CSS 驱动，checkbox 控制。',
         'comp-toggle.labels': '默认 · 已选 · 小号 · 禁用',
-        'comp-toggle.theme-desc': '主题变体 <code>.syo-toggle-theme</code> — 日月切换，天空渐变，星星点缀：',
+        'comp-toggle.theme-desc': '主题变体 <code>.syo-toggle--theme</code> — 日月切换，天空渐变，星星点缀：',
         'comp-toggle.try-it': '← 点一下',
 
         /* Scroll spy */
@@ -1367,7 +1367,7 @@ Sayo.scrollSpy.destroy();</div>
         /* Toggle section */
         'comp-toggle.desc': 'Generic pill toggle switch. Clean and restrained by default. Theme variant with sun/moon sky animation. Pure CSS, checkbox-driven.',
         'comp-toggle.labels': 'Default · Checked · Small · Disabled',
-        'comp-toggle.theme-desc': 'Theme variant <code>.syo-toggle-theme</code> — sun & moon switch, sky gradient, twinkling stars:',
+        'comp-toggle.theme-desc': 'Theme variant <code>.syo-toggle--theme</code> — sun & moon switch, sky gradient, twinkling stars:',
         'comp-toggle.try-it': '← Try it',
 
         /* Scroll spy */
