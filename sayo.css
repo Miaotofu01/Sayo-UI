@@ -158,9 +158,6 @@ body {
 }
 
 /* custom cursor active — suppress system cursor on known interactive elements */
-body[data-syo-cursor] {
-  cursor: none;
-}
 body[data-syo-cursor] a,
 body[data-syo-cursor] button,
 body[data-syo-cursor] input:not([type="range"]),
