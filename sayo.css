@@ -157,18 +157,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* custom cursor active — suppress system cursor on Sayo components only.
-   Avoids generic selectors (a, button, input) so extension popups keep their cursor. */
-body[data-syo-cursor] .syo-btn,
-body[data-syo-cursor] .syo-tab,
-body[data-syo-cursor] .syo-dropdown-item,
-body[data-syo-cursor] .syo-dropdown-toggle,
-body[data-syo-cursor] .syo-tooltip,
-body[data-syo-cursor] .syo-toggle,
-body[data-syo-cursor] .syo-checkbox,
-body[data-syo-cursor] .syo-radio,
-body[data-syo-cursor] [onclick] {
-  cursor: none;
+/* custom cursor active — suppress all system cursors */
+body[data-syo-cursor],
+body[data-syo-cursor] * {
+  cursor: none !important;
 }
 
 /* ── SCROLLBAR ───────────────────────────────────────────────── */
