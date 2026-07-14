@@ -32,6 +32,8 @@
     var glowRadius = 40;
     var targetGlow = 40;
     var running = false;
+    var idleTimer = null;
+    var IDLE_TIMEOUT = 2000;  // stop rAF after 2s of no mouse movement
 
     // Configurable defaults
     var DEFAULTS = {
@@ -93,6 +95,11 @@
       cy = e.clientY;
       el.style.left = cx + 'px';
       el.style.top = cy + 'px';
+      // Restart rAF if idle-timed out
+      if (!running && !isReducedMotion) { running = true; raf(draw); }
+      // Reset idle timer
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(function() { running = false; }, IDLE_TIMEOUT);
     }
 
     function onDown() {
@@ -401,9 +408,9 @@
     }
 
     function escapeHtml(str) {
-      var div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
+      return str.replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+      });
     }
 
     function destroy() {
@@ -751,6 +758,7 @@
      ═══════════════════════════════════════════════════════════════ */
   Sayo.dialog = (function() {
     var activeOverlay = null;
+    var titleIdCounter = 0;
 
     function createOverlay() {
       var overlay = document.createElement('div');
@@ -770,7 +778,9 @@
         header.className = 'syo-dialog-header';
         var title = document.createElement('h3');
         title.className = 'syo-dialog-title';
+        title.id = 'syo-dialog-title-' + (++titleIdCounter);
         title.textContent = opts.title;
+        dialog.setAttribute('aria-labelledby', title.id);
         header.appendChild(title);
         if (opts.closable !== false) {
           var closeBtn = document.createElement('button');

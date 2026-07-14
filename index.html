@@ -368,7 +368,7 @@
     <a href="#components" data-i18n="nav.components">组件</a>
     <a href="#motion" data-i18n="nav.motion">动效</a>
     <a href="#js" data-i18n="nav.js">API</a>
-    <label class="syo-toggle syo-toggle--lang" id="lang-toggle" title="Switch language">
+    <label class="syo-toggle syo-toggle--lang" id="lang-toggle" title="Switch language" aria-label="Switch language" data-i18n-attr="aria-label:lang.switch-label">
       <input type="checkbox" id="lang-checkbox">
       <span class="syo-toggle-track"></span>
       <span class="syo-toggle-knob">
@@ -376,7 +376,7 @@
         <span class="syo-lang-en">EN</span>
       </span>
     </label>
-    <label class="syo-toggle syo-toggle--theme" id="theme-toggle" title="Toggle theme" style="margin-left:var(--syo-space-2)">
+    <label class="syo-toggle syo-toggle--theme" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme" data-i18n-attr="aria-label:theme.toggle-label" style="margin-left:var(--syo-space-2)">
       <input type="checkbox" id="theme-checkbox">
       <span class="syo-toggle-track"></span>
       <span class="syo-toggle-knob">
@@ -1268,6 +1268,8 @@ Sayo.scrollSpy.destroy();</div>
         /* lang toggle */
         'lang.switch': 'EN',
         'lang.title': '切换到英文',
+        'lang.switch-label': '切换语言',
+        'theme.toggle-label': '切换主题',
       },
       en: {
         'nav.install': 'Install',
@@ -1427,6 +1429,8 @@ Sayo.scrollSpy.destroy();</div>
 
         'lang.switch': '中',
         'lang.title': 'Switch to Chinese',
+        'lang.switch-label': 'Switch language',
+        'theme.toggle-label': 'Toggle theme',
       }
     };
 

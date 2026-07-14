@@ -861,7 +861,7 @@ hr {
   box-shadow: 0 1px 4px rgba(0,0,0,0.2), 0 0 10px rgba(188, 140, 255, 0.3);
 }
 .syo-toggle input:focus-visible ~ .syo-toggle-knob {
-  outline: 2px solid var(--syo-accent);
+  outline: 2px solid var(--syo-blue);
   outline-offset: 2px;
 }
 
