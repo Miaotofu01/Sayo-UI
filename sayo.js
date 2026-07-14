@@ -9,10 +9,9 @@
   /* ── UTILITIES ──────────────────────────────────────────────── */
   function $(sel, ctx) { return (ctx || document).querySelector(sel); }
   function $$(sel, ctx) { return Array.from((ctx || document).querySelectorAll(sel)); }
-  function on(el, evt, fn) { el.addEventListener(evt, fn); }
-  function off(el, evt, fn) { el.removeEventListener(evt, fn); }
+  function on(el, evt, fn, opts) { el.addEventListener(evt, fn, opts); }
+  function off(el, evt, fn, opts) { el.removeEventListener(evt, fn, opts); }
   function remove(el) { if (el && el.parentNode) el.parentNode.removeChild(el); }
-  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
   var raf = requestAnimationFrame.bind(window);
   var now = performance.now.bind(performance);
@@ -119,10 +118,11 @@
           function settle() {
             if (settled) return;
             settled = true;
+            if (!el) return; // destroyed mid-bounce
             el.style.transition = 'width 120ms cubic-bezier(0.34,1.56,0.64,1), height 120ms cubic-bezier(0.34,1.56,0.64,1)';
             el.style.width = cfg.size + 'px';
             el.style.height = cfg.size + 'px';
-            setTimeout(function() { el.style.transition = ''; }, 140);
+            setTimeout(function() { if (el) el.style.transition = ''; }, 140);
           }
           setTimeout(settle, 70);
         })();
@@ -203,7 +203,7 @@
 
       // Ambient glow
       if (cx > 0 && cy > 0) {
-        var intensity = pressing ? cfg.glowIntensityPress : cfg.glowIntensity;
+        var intensity = pressing ? cfg.glowIntensityPress : (hovering ? cfg.glowIntensityHover : cfg.glowIntensity);
         var glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowRadius);
         glow.addColorStop(0, 'rgba(' + cfg.accentR + ',' + cfg.accentG + ',' + cfg.accentB + ',' + intensity.toFixed(2) + ')');
         glow.addColorStop(0.5, 'rgba(' + cfg.trailR + ',' + cfg.trailG + ',' + cfg.trailB + ',' + (intensity * 0.35).toFixed(2) + ')');
@@ -243,6 +243,7 @@
 
     function destroy() {
       running = false;
+      clearTimeout(idleTimer);
       remove(el); el = null;
       if (canvas) { remove(canvas); canvas = null; ctx = null; }
       off(document, 'mousemove', onMove);
@@ -352,6 +353,7 @@
      ═══════════════════════════════════════════════════════════════ */
   Sayo.ripple = (function() {
     var target;
+    var initialized = false;
     var DEFAULTS = { flashR: 88, flashG: 166, flashB: 255, rippleR: 188, rippleG: 140, rippleB: 255 };
 
     var cfg = {};
@@ -395,6 +397,8 @@
 
     function init(opts) {
       if (isReducedMotion) return;
+      if (initialized) return;
+      initialized = true;
       cfg = Object.assign({}, DEFAULTS, opts || {});
       // If called without args and body has [data-syo-ripple], use body
       target = (opts && opts.container) ? (typeof opts.container === 'string' ? $(opts.container) : opts.container) : document;
@@ -402,6 +406,7 @@
     }
 
     function destroy() {
+      initialized = false;
       off(document, 'mousedown', onDown);
       target = null;
     }
@@ -957,10 +962,11 @@
     }
 
     function show(opts) {
+      opts = opts || {};
       close(); // dismiss any existing dialog
 
       var overlay = createOverlay();
-      var dialog = createDialog(opts || {});
+      var dialog = createDialog(opts);
       var previousFocus = document.activeElement;
       var bodyOverflow = document.body.style.overflow;
 
@@ -1026,6 +1032,7 @@
       if (data) {
         document.body.style.overflow = data.bodyOverflow || '';
         if (data.previousFocus) data.previousFocus.focus();
+        if (data.onKey) document.removeEventListener('keydown', data.onKey);
       } else {
         document.body.style.overflow = '';
       }
@@ -1203,6 +1210,8 @@
     if (Sayo.toast.destroy) Sayo.toast.destroy();
     if (Sayo.reveal.destroy) Sayo.reveal.destroy();
     if (Sayo.parallax.destroy) Sayo.parallax.destroy();
+    if (Sayo.scrollSpy.destroy) Sayo.scrollSpy.destroy();
+    if (Sayo.dialog.close) Sayo.dialog.close();
   };
 
   /* ── EXPORT ─────────────────────────────────────────────────── */
