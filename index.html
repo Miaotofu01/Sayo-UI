@@ -940,6 +940,13 @@ await Sayo.dialog.alert({ title: 'Done', message: 'File saved.' });</div>
     <span class="syo-tooltip syo-tooltip--left syo-btn syo-btn--sm" data-syo-tooltip="返回上一页">左</span>
     <span class="syo-tooltip syo-tooltip--right syo-btn syo-btn--sm" data-syo-tooltip="跳转到下一页">右</span>
   </div>
+  <p class="syo-text-xs syo-text-muted syo-mt-3 syo-mb-3">颜色变体：<code>.syo-tooltip--info</code> / <code>--success</code> / <code>--warning</code> / <code>--danger</code></p>
+  <div class="demo-row" style="gap:var(--syo-space-2);align-items:center">
+    <span class="syo-tooltip syo-tooltip--info syo-btn syo-btn--sm" data-syo-tooltip="新版本 v2.1.0 已发布">提示</span>
+    <span class="syo-tooltip syo-tooltip--success syo-btn syo-btn--sm" data-syo-tooltip="所有文件保存成功">成功</span>
+    <span class="syo-tooltip syo-tooltip--warning syo-btn syo-btn--sm" data-syo-tooltip="免费额度即将用尽">警告</span>
+    <span class="syo-tooltip syo-tooltip--danger syo-btn syo-btn--sm" data-syo-tooltip="此操作不可撤销">危险</span>
+  </div>
   <div class="code-block syo-mt-3">
 <span class="syn">&lt;!-- Default: hover shows above --&gt;</span>
 &lt;span class="syo-tooltip" <strong>data-syo-tooltip</strong>="提示文字"&gt;Hover me&lt;/span&gt;

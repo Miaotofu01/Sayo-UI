@@ -1385,6 +1385,43 @@ hr {
   transform: translateY(-50%) rotate(45deg) scale(1);
 }
 
+/* Color variants */
+.syo-tooltip--info::after {
+  border-color: var(--syo-blue);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25), 0 0 8px rgba(88,166,255,0.15);
+}
+.syo-tooltip--info::before {
+  background: var(--syo-bg-elevated);
+  border-color: var(--syo-blue);
+}
+
+.syo-tooltip--success::after {
+  border-color: var(--syo-green);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25), 0 0 8px rgba(63,185,80,0.15);
+}
+.syo-tooltip--success::before {
+  background: var(--syo-bg-elevated);
+  border-color: var(--syo-green);
+}
+
+.syo-tooltip--warning::after {
+  border-color: var(--syo-yellow);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25), 0 0 8px rgba(210,153,34,0.15);
+}
+.syo-tooltip--warning::before {
+  background: var(--syo-bg-elevated);
+  border-color: var(--syo-yellow);
+}
+
+.syo-tooltip--danger::after {
+  border-color: var(--syo-red);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25), 0 0 8px rgba(248,81,73,0.15);
+}
+.syo-tooltip--danger::before {
+  background: var(--syo-bg-elevated);
+  border-color: var(--syo-red);
+}
+
 /* ── COMPONENTS: TABS ─────────────────────────────────────── */
 .syo-tabs {
   display: flex;
